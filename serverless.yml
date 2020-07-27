@@ -1,0 +1,49 @@
+service:
+  name: oae-orestar-scraper
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+  serverless-iam-roles-per-function:
+    defaultInherit: true
+  prune:
+    automatic: true
+    number: 3
+
+
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+  - serverless-iam-roles-per-function
+  - serverless-prune-plugin
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  frameworkVersion: ‘1.64.1’
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region, 'us-west-2'}
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  environment:
+    DEBUG: '*'
+    NODE_ENV: ${self:provider.stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  tracing:
+    lambda: true
+  # iamRoleStatements:
+  #   - Effect: Allow
+  #     Action:
+  #       - xray:PutTraceSegments
+  #       - xray:PutTelemetryRecords
+  #     Resource: "*"
+
+functions:
+  orestarScraper:
+    handler: src/handler.orestarScraper
+    events:
+      - http:
+          method: get
+          path: orestarScraper
