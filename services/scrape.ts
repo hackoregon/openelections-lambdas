@@ -1,12 +1,18 @@
 import puppeteer from 'puppeteer'
 import path from 'path'
+import { parseString } from '@fast-csv/parse'
+
 
 export async function runScraper (): Promise<any> {
   const browser = await puppeteer.launch({
     headless: true,
     userDataDir: './temp',
     timeout: 0,
-    args: [ '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36', '--user-data-dir=/tmp/user_data/', '--window-size=1200,800' ]
+    args: [
+      '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36',
+      '--user-data-dir=/tmp/user_data/',
+      '--window-size=1200,800'
+    ]
     // args: ['--disable-dev-shm-usage', 'start-maximized', '--disable-extensions', '--disable-gpu', '--no-sandbox'] // https://peter.sh/experiments/chromium-command-line-switches/
   })
   console.log('here?')
@@ -54,37 +60,65 @@ export async function runScraper (): Promise<any> {
         console.log('clicking the element', elem)
         elem.click()
       }),
-      Promise.race([
-        page.on('response', async (response) => {
-          // console.log('response', response.url())
-          // await page.click('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a').then(() => {
-          //   console.log('clicked the button')
-          // })
-          await Promise.race([
-            page.waitForNavigation({waitUntil: 'domcontentloaded', timeout: 0 }),
-            page.waitForNavigation({waitUntil: 'load', timeout: 0 }),
-            page.waitFor('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', { timeout: 0 })
-          ])
-          await page.$eval('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', elem => {
-            console.log('clicking the element, #2', elem)
-            elem.click()
-          })
-          const url = page.url()
-          console.log(url)
-          // await page.evaluate((selector) => document.querySelector(selector).click(), '#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a')
-        }),
-        page.on('requestfailed', request => {
-          console.log(request.url() + ' ' + request.failure().errorText);
-        })
+      await Promise.race([
+        page.waitForNavigation({waitUntil: 'domcontentloaded', timeout: 0 }),
+        page.waitForNavigation({waitUntil: 'load', timeout: 0 }),
+        page.waitFor('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', { timeout: 0 })
       ])
+      // Promise.race([
+      //   page.on('response', async (response) => {
+      //     // console.log('response', response.url())
+      //     // await page.click('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a').then(() => {
+      //     //   console.log('clicked the button')
+      //     // })
+      //     await Promise.race([
+      //       page.waitForNavigation({waitUntil: 'domcontentloaded', timeout: 0 }),
+      //       page.waitForNavigation({waitUntil: 'load', timeout: 0 }),
+      //       page.waitFor('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', { timeout: 0 })
+      //     ])
+      //     await page.$eval('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', elem => {
+      //       console.log('clicking the element, #2', elem)
+      //       elem.click()
+      //     })
+      //     const url = page.url()
+      //     console.log(url)
+      //     // await page.evaluate((selector) => document.querySelector(selector).click(), '#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a')
+      //   }),
+      //   page.on('requestfailed', request => {
+      //     console.log(request.url() + ' ' + request.failure().errorText);
+      //   })
+      // ])
     ])
   } catch (error) {
     console.log(error)
   }
 
+  const url = page.url()
+  console.log(url)
   // #content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a
   // await page.click('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a')
-  
+  // await page.$eval('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', elem => {
+  //   console.log('clicking the element 2', elem)
+  //   elem.click()
+  // })
+  const downloadButton = await page.$('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a')
+  const downloadStatus = await page.evaluate( async downloadUrl => {
+    // element.click()
+    const file = await window.fetch(downloadUrl, { credentials: 'include' })
+    const CSV_STRING = await file.text()
+    try {
+      await parseString(CSV_STRING, { headers: true })
+        .on('error', error => console.error(error))
+        .on('data', row => console.log(row))
+        .on('end', (rowCount: number) => console.log(`Parsed ${rowCount} rows`))
+    } catch (error) {
+      console.log(error)
+    }
+  }, downloadButton)
+  console.log(downloadStatus)
+  // await page.waitForNavigation({
+  //   timeout: 0
+  // })
   // const [response] = await Promise.all([
   //   page.waitForNavigation({
   //     timeout: 0
@@ -103,6 +137,7 @@ export async function runScraper (): Promise<any> {
   // console.log('done fetching response')
   // console.log(response)
 
-  // await browser.close()
+  await browser.close()
+  return process.exit()
   // console.log('done')
 }
