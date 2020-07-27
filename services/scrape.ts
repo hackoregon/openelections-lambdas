@@ -1,6 +1,9 @@
 import puppeteer from 'puppeteer';
 import path from 'path';
-import { parseString } from '@fast-csv/parse';
+import XLSX from 'xlsx';
+
+// TODO: saving file for debug
+import { writeFileSync } from 'fs';
 
 export async function runScraper(): Promise<any> {
   const browser = await puppeteer.launch({
@@ -14,8 +17,8 @@ export async function runScraper(): Promise<any> {
     ],
     // args: ['--disable-dev-shm-usage', 'start-maximized', '--disable-extensions', '--disable-gpu', '--no-sandbox'] // https://peter.sh/experiments/chromium-command-line-switches/
   });
-  console.log('here?');
   const page = await browser.newPage();
+  page.on('console', (stuffToLog) => console.log(stuffToLog.text()));
   await page.setViewport({
     width: 640,
     height: 480,
@@ -42,12 +45,15 @@ export async function runScraper(): Promise<any> {
 
   try {
     console.log('setting input');
-    await page.type('input[name=cneSearchFilerCommitteeTxt]', 'Ted Wheeler').then(async () => {
-      const candidateInputTarget = await page.$('input[name=cneSearchFilerCommitteeTxt]');
-      const candidateName = await page.evaluate((element) => element.value, candidateInputTarget);
-      console.log(candidateName);
-    });
+
+    await page.type('input[name=cneSearchFilerCommitteeTxt]', 'Ted Wheeler')
+      .then(async () => {
+        const candidateInputTarget = await page.$('input[name=cneSearchFilerCommitteeTxt]');
+        const candidateName = await page.evaluate((element) => element.value, candidateInputTarget);
+        console.log(candidateName);
+      });
   } catch (error) {
+    console.log('failed to set input');
     console.log(error);
   }
 
@@ -64,79 +70,27 @@ export async function runScraper(): Promise<any> {
         page.waitForNavigation({ waitUntil: 'load', timeout: 0 }),
         page.waitFor('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', { timeout: 0 }),
       ]),
-      // Promise.race([
-      //   page.on('response', async (response) => {
-      //     // console.log('response', response.url())
-      //     // await page.click('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a').then(() => {
-      //     //   console.log('clicked the button')
-      //     // })
-      //     await Promise.race([
-      //       page.waitForNavigation({waitUntil: 'domcontentloaded', timeout: 0 }),
-      //       page.waitForNavigation({waitUntil: 'load', timeout: 0 }),
-      //       page.waitFor('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', { timeout: 0 })
-      //     ])
-      //     await page.$eval('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', elem => {
-      //       console.log('clicking the element, #2', elem)
-      //       elem.click()
-      //     })
-      //     const url = page.url()
-      //     console.log(url)
-      //     // await page.evaluate((selector) => document.querySelector(selector).click(), '#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a')
-      //   }),
-      //   page.on('requestfailed', request => {
-      //     console.log(request.url() + ' ' + request.failure().errorText);
-      //   })
-      // ])
     ]);
   } catch (error) {
+    console.log('failed to set listeners');
     console.log(error);
   }
 
-  const url = page.url();
-  console.log(url);
-  // #content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a
-  // await page.click('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a')
-  // await page.$eval('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a', elem => {
-  //   console.log('clicking the element 2', elem)
-  //   elem.click()
-  // })
+  console.log('url:', page.url());
+
   const downloadButton = await page.$('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a');
-  const downloadStatus = await page.evaluate(async (downloadUrl) => {
-    // element.click()
+  const excelFileData = await page.evaluate(async (downloadUrl: string) => {
+    console.log('fetching data with credentials');
     const file = await window.fetch(downloadUrl, { credentials: 'include' });
-    const CSV_STRING = await file.text();
-    try {
-      await parseString(CSV_STRING, { headers: true })
-        .on('error', (error) => console.error(error))
-        .on('data', (row) => console.log(row))
-        .on('end', (rowCount: number) => console.log(`Parsed ${rowCount} rows`));
-    } catch (error) {
-      console.log(error);
-    }
+    return file.text();
   }, downloadButton);
-  console.log(downloadStatus);
-  // await page.waitForNavigation({
-  //   timeout: 0
-  // })
-  // const [response] = await Promise.all([
-  //   page.waitForNavigation({
-  //     timeout: 0
-  //   }),
-  //   page.click('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a'),
-  // ])
 
-  // ! dear andy, possible new tactic: get the url from the link above. use it with page.waitForResponse
-  // const xcelDownloadLink = await page.$('#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a')
-  // const xcelUrl = await page.evaluate(element => element.href, xcelDownloadLink)
+  // TODO: remove me
+  writeFileSync('temp/output.xls', excelFileData);
 
-  // console.log(xcelUrl)
-
-  // const response = await page.waitForResponse(xcelUrl, { timeout: 0 })
-
-  // console.log('done fetching response')
-  // console.log(response)
+  const financeData = XLSX.read(excelFileData, { type: 'binary' });
+  console.log(financeData);
 
   await browser.close();
-  return process.exit();
-  // console.log('done')
+  console.log('done');
 }
