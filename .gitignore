@@ -8,4 +8,10 @@ jspm_packages
 # Webpack directories
 .webpack
 
+.eslintcache
+yarn-debug.log*
+yarn-error.log*
+
+# misc
+.DS_Store
 temp
