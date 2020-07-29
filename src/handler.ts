@@ -7,7 +7,7 @@ export const orestarScraper: APIGatewayProxyHandler = async () => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      headers: stuff,
+      content: stuff,
     }, null, 2),
   };
 };
