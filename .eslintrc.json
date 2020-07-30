@@ -26,7 +26,10 @@
     }]
   },
   "parser": "@typescript-eslint/parser",
-  "env": {},
+  "env": {
+    "browser": true,
+    "node": true
+  },
   "overrides": [],
   "settings": {
     "import/resolver": {
