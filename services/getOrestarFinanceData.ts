@@ -1,8 +1,12 @@
 import puppeteer from 'puppeteer';
-import XLSX from 'xlsx';
+// import XLSX from 'xlsx'; // TODO: use me for xls parsing.
 import { existsSync as fileExists } from 'fs';
 
-export async function runScraper(): Promise<any> {
+interface OrestarFinanceQueryCriteria {
+  candidateName: string;
+}
+
+export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<void> => {
   const browser = await puppeteer.launch({
     headless: true,
     timeout: 0,
@@ -28,10 +32,8 @@ export async function runScraper(): Promise<any> {
 
   page.goto('https://secure.sos.state.or.us/orestar/gotoPublicTransactionSearch.do');
 
-  const candidate = 'Ted Wheeler';
   const candidateInputSelector = 'input[name=cneSearchFilerCommitteeTxt]';
 
-  // page.waitForSelector(candidateInputSelector);
   await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 });
   console.log('done waiting for landing');
 
@@ -39,7 +41,7 @@ export async function runScraper(): Promise<any> {
   // eslint-disable-next-line no-restricted-globals
   await page.evaluate(() => console.log(`url is ${location.href}`));
 
-  await page.type(candidateInputSelector, candidate, { delay: 100 });
+  await page.type(candidateInputSelector, candidateName, { delay: 100 });
   // await page.screenshot({ path: 'pics/2.png' });
 
   console.log('entered search query');
@@ -73,10 +75,12 @@ export async function runScraper(): Promise<any> {
 
   // TODO: be sure to remove the xls to ensure fs watching doesn't get an old file
 
+  const xlsFilename = './temp/XcelCNESearch.xls';
+
   // poll the filesystem for the downloaded file.
   const maxTimeout = 120000;
   const start = Date.now();
-  while (!fileExists('./temp/XcelCNESearch.xls')) {
+  while (!fileExists(xlsFilename)) {
     if (Date.now() - start > maxTimeout) {
       console.log('File polling timed out. Aborting download.');
       browser.close();
@@ -89,4 +93,5 @@ export async function runScraper(): Promise<any> {
   browser.close();
 
   // TODO: do XLS parsing here.
-}
+  // XLSX.read(xlsFilename);
+};

@@ -1,9 +1,9 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { runScraper } from '@services/scrape';
+import getOrestarFinanceData from '@services/getOrestarFinanceData';
 import 'source-map-support/register';
 
 export const orestarScraper: APIGatewayProxyHandler = async () => {
-  const stuff = await runScraper();
+  const stuff = await getOrestarFinanceData({ candidateName: 'Ted Wheeler' });
   return {
     statusCode: 200,
     body: JSON.stringify({
