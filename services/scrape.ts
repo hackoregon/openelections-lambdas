@@ -30,7 +30,7 @@ export async function runScraper(): Promise<any> {
   console.log('doing search.');
 
   const exportSelector = '#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a';
-  await page.waitFor(exportSelector);
+  await page.waitFor(exportSelector, { timeout: 0 });
 
   console.log('search loaded.');
 
