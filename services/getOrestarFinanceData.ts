@@ -22,8 +22,7 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0',
   });
 
-  // eslint-disable-next-line no-underscore-dangle
-  await page._client.send('Page.setDownloadBehavior', {
+  await (page as any)._client.send('Page.setDownloadBehavior', {
     behavior: 'allow',
     downloadPath: './temp',
   });

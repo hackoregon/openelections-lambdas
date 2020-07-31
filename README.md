@@ -1,23 +1,27 @@
-# oae-orestar-scraper
-Base template for serverless framework with typescript, eslint and jest preconfigured
+# OAE Lambdas
+This repo is the home of all Open and Accountable Elections lambdas. The current list of lambdas includes:
+- orestarScraper (cron job)
 
-This repository comes pre-configured with some common tools and configuration for working serverless frameowrk and Typescript with AWS.
+## Background
+This is a template for the Serverless Framework with typescript, eslint and jest.
 
-A full breakdown of this setup can be found [here](https://medium.com/@Michael_Timbs/getting-started-with-aws-serverless-typescript-8c172ccfec41)
+This repository has common tools and configuration for working The Serverless Framework and Typescript with AWS.
+
+Largely based of the repo [here](https://medium.com/@Michael_Timbs/getting-started-with-aws-serverless-typescript-8c172ccfec41).
 
 
-## Serverless Plugins
+### Serverless Plugins
 - serverless-iam-roles-per-function
 - serverless-offline
 
-### Lambda PowerTools
+#### Lambda PowerTools
 - @dazn/lambda-powertools-cloudwatchevents-client
 - @dazn/lambda-powertools-correlation-ids
 - @dazn/lambda-powertools-logger
 - @dazn/lambda-powertools-pattern-basic
 - @dazn/lambda-powertools-lambda-client
 
-### Linting
+#### Linting
 - eslint
 - eslint-config-airbnb-base
 - typescript-eslint
@@ -27,7 +31,7 @@ A full breakdown of this setup can be found [here](https://medium.com/@Michael_T
 - eslint-import-resolver-alias
 - eslint-plugin-module-resolver
 
-### Testing
+#### Testing
 - jest
 - babel-jest
 - @babel/core
@@ -44,7 +48,7 @@ describe('who tests the tests?', () => {
 });
 ```
 
-### Module Aliasing
+#### Module Aliasing
 Everything comes configured out the box to leverage module aliasing. 3 example aliases have been preconfigured.
 
 Aliases must be defined in webpack, tsconfig, and eslint

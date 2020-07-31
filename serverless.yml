@@ -1,5 +1,5 @@
 service:
-  name: oae-orestar-scraper
+  name: oae-lambdas
 
 custom:
   webpack:
@@ -25,8 +25,8 @@ provider:
   frameworkVersion: ‘1.64.1’
   stage: ${opt:stage, 'local'}
   region: ${opt:region, 'us-west-2'}
-  apiGateway:
-    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  # apiGateway:
+  #   minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
     DEBUG: '*'
     NODE_ENV: ${self:provider.stage}
@@ -39,11 +39,11 @@ provider:
   #       - xray:PutTraceSegments
   #       - xray:PutTelemetryRecords
   #     Resource: "*"
-
+# This needs to be upgraded to a cron eventually
 functions:
   orestarScraper:
     handler: src/handler.orestarScraper
     events:
-      - http:
+      - http: 
           method: get
           path: orestarScraper
