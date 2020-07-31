@@ -10,6 +10,7 @@
     "offline": "SLS_DEBUG=* sls offline --noTimeout"
   },
   "dependencies": {
+    "@bugsnag/js": "^7.2.1",
     "@dazn/lambda-powertools-cloudwatchevents-client": "^1.21.0",
     "@dazn/lambda-powertools-correlation-ids": "^1.8.2",
     "@dazn/lambda-powertools-lambda-client": "^1.21.0",
