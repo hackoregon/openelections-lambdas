@@ -8,7 +8,7 @@ interface OrestarFinanceQueryCriteria {
 
 export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<void> => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     timeout: 0,
   });
 
