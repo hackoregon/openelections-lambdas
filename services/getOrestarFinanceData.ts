@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer';
 // import XLSX from 'xlsx'; // TODO: use me for xls parsing.
 import { existsSync as fileExists } from 'fs';
+import { readXml } from './readXls';
 
 interface OrestarFinanceQueryCriteria {
   candidateName: string;
@@ -95,6 +96,7 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
   }
 
   console.log('successfully downloaded file!!');
+  readXml()
   browser.close();
 
   // TODO: do XLS parsing here.
