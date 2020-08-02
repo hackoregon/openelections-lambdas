@@ -96,7 +96,7 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
   }
 
   console.log('successfully downloaded file!!');
-  // browser.close();
+  browser.close();
 
   // TODO: do XLS parsing here.
   // XLSX.read(xlsFilename);
