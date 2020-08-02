@@ -36,7 +36,6 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
   const startDate = '01/01/2020'
   const transactionTypeSelectSelector = '#cneSearchTranType'
   const transactionType = 'C'
-  // const endDateInputSelector = ''
 
   await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 });
   console.log('done waiting for landing');
