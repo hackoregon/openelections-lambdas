@@ -23,12 +23,17 @@ type OrestarEntry = {
   'Emp City': string;
   'Emp State': string;
   'Employ Ind': string;
-  'Self Employ Ind': string;
+  'Self Employ Ind'?: string;
   'Addr Line1': string;
   'City': string;
   'State': string;
   'Zip': string;
   'Country': string;
+  'Review By Name'?: string;
+  'Review Date'?: string;
+  'Contributor/Payee Committee ID'?: string;
+  'Addr Line2'?: string;
+  'Purp Desc'?: string;
 }
 
 export function readXml (): any {
@@ -39,5 +44,7 @@ export function readXml (): any {
   })
   const sheetList = workbook.SheetNames
   const jsonFile: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetList[0]])
-  console.log(jsonFile[0])
+  jsonFile.forEach((orestarEntry: OrestarEntry) => {
+    
+  })
 }

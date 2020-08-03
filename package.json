@@ -18,8 +18,10 @@
     "@dazn/lambda-powertools-pattern-basic": "^1.21.0",
     "aws-lambda": "^1.0.5",
     "aws-sdk": "^2.627.0",
+    "class-validator": "^0.12.2",
     "puppeteer": "^5.2.1",
     "source-map-support": "^0.5.10",
+    "typeorm": "^0.2.25",
     "xlsx": "^0.16.4"
   },
   "devDependencies": {
