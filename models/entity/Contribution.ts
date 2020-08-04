@@ -111,10 +111,17 @@ export enum PaymentMethod {
   DEBIT = 'debit'
 }
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
-@Entity({ name: 'contributions' })
+@Entity({ name: 'external contributions' })
 export class Contribution {
   @PrimaryGeneratedColumn()
   id: number;
+
+  // New: from Orestar
+  @Column()
+  orestarOriginalId: string;
+
+  @Column()
+  orestarTransactionId: string;
 
   @Column()
   @CreateDateColumn()
@@ -139,12 +146,12 @@ export class Contribution {
   @IsDefined()
   subType: ContributionSubType;
 
-  @Column({
-      type: 'enum',
-      enum: OaeType,
-      nullable: true
-  })
-  oaeType: OaeType;
+//   @Column({
+//       type: 'enum',
+//       enum: OaeType,
+//       nullable: true
+//   })
+//   oaeType: OaeType;
 
   @Column({
       type: 'enum',
@@ -496,7 +503,7 @@ export const contributionSummaryFields = <const>[
   'subType',
   'inKindType',
   'contributorType',
-  'oaeType',
+//   'oaeType',
   'contrPrefix',
   'firstName',
   'middleInitial',
