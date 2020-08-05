@@ -1,5 +1,5 @@
 import XLSX from 'xlsx';
-import { IContributionSummary, Contribution, ContributionType, ContributionSubType } from 'models/entity/Contribution';
+import { IContributionSummary, Contribution, ContributionType, ContributionSubType, ContributorType } from 'models/entity/Contribution';
 
 type OrestarEntry = {
   'Tran Id': string; // 7 digit number
@@ -26,6 +26,7 @@ type OrestarEntry = {
   'Employ Ind': string;
   'Self Employ Ind'?: string;
   'Addr Line1': string;
+  'Addr Line2'?: string;
   'City': string;
   'State': string;
   'Zip': string;
@@ -33,7 +34,6 @@ type OrestarEntry = {
   'Review By Name'?: string;
   'Review Date'?: string;
   'Contributor/Payee Committee ID'?: string;
-  'Addr Line2'?: string;
   'Purp Desc'?: string;
 }
 
@@ -55,6 +55,24 @@ function getContributionSubType (orestarSubType: string): ContributionSubType {
   return oaeSubType
 }
 
+function getContributorType (orestarBookType: string): ContributorType {
+  const contributorTypeMap = {
+    'Individual': ContributorType.INDIVIDUAL,
+    'Business Entity': ContributorType.BUSINESS,
+    'Labor Organization': ContributorType.LABOR,
+    'Political Committee': ContributorType.POLITICAL_COMMITTEE,
+    'Other': ContributorType.OTHER,
+    'Candidate & Immediate Family': ContributorType.FAMILY,
+    'Unregistered Committee': ContributorType.UNREGISTERED,
+    'Political Party Committee': ContributorType.POLITICAL_PARTY
+  }
+  const oaeContributorType = contributorTypeMap[orestarBookType]
+  if (!oaeContributorType) {
+    console.log(`No contributorType for ${orestarBookType}`)
+  }
+  return oaeContributorType
+}
+
 export function readXml (): any {
   const workbook = XLSX.readFile('temp/XcelCNESearch.xls', {
     bookVBA: true,
@@ -71,6 +89,14 @@ export function readXml (): any {
       date: new Date(orestarEntry['Tran Date']),
       type: ContributionType.CONTRIBUTION,
       subType: getContributionSubType(orestarEntry['Sub Type']),
+      name: orestarEntry['Contributor/Payee'],
+      amount: orestarEntry['Amount'],
+      // amount: orestarEntry['Aggregate Amount'], // do we need to track this?
+      contributorType: orestarEntry['Book Type'],
+      occupation: orestarEntry['Occptn Txt'],
+      notes: orestarEntry['Purp Desc'],
+      address1: orestarEntry['Addr Line1'],
+      address2: orestarEntry['Addr Line2']
     }
     
     console.log(oaeEntry)

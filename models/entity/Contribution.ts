@@ -153,12 +153,12 @@ export class Contribution {
 //   })
 //   oaeType: OaeType;
 
-  @Column({
-      type: 'enum',
-      enum: PaymentMethod,
-      nullable: true
-  })
-  paymentMethod: PaymentMethod;
+//   @Column({
+//       type: 'enum',
+//       enum: PaymentMethod,
+//       nullable: true
+//   })
+//   paymentMethod: PaymentMethod;
 
   @Column({
       type: 'enum',
@@ -170,20 +170,20 @@ export class Contribution {
   @Column({ nullable: true })
   contrPrefix?: string;
 
-  @Column({ nullable: true })
-  firstName?: string;
+//   @Column({ nullable: true })
+//   firstName?: string;
 
-  @Column({ nullable: true })
-  middleInitial?: string;
+//   @Column({ nullable: true })
+//   middleInitial?: string;
 
-  @Column({ nullable: true })
-  lastName?: string;
+//   @Column({ nullable: true })
+//   lastName?: string;
 
-  @Column({ nullable: true })
-  suffix?: string;
+//   @Column({ nullable: true })
+//   suffix?: string;
 
-  @Column({ nullable: true })
-  title?: string;
+//   @Column({ nullable: true })
+//   title?: string;
 
   @Column({ nullable: true })
   name?: string;
@@ -206,6 +206,9 @@ export class Contribution {
   @IsDefined()
   @Column()
   zip: string;
+
+  @Column()
+  country: string;
 
   @Column({ nullable: true })
   county?: string;
