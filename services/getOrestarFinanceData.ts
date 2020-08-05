@@ -1,13 +1,11 @@
 import puppeteer from 'puppeteer';
-// import XLSX from 'xlsx'; // TODO: use me for xls parsing.
 import { existsSync as fileExists } from 'fs';
-import { readXml } from './readXls';
 
 interface OrestarFinanceQueryCriteria {
   candidateName: string;
 }
 
-export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<void> => {
+export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<string> => {
   const browser = await puppeteer.launch({
     headless: true,
     timeout: 0,
@@ -80,7 +78,6 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
   console.log('downloading XLS file.');
 
   // TODO: be sure to remove the xls to ensure fs watching doesn't get an old file
-
   const xlsFilename = './temp/XcelCNESearch.xls';
 
   // poll the filesystem for the downloaded file.
@@ -96,9 +93,8 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
   }
 
   console.log('successfully downloaded file!!');
-  readXml();
+
   browser.close();
 
-  // TODO: do XLS parsing here.
-  // XLSX.read(xlsFilename);
+  return xlsFilename
 };

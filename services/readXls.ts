@@ -1,6 +1,6 @@
 import XLSX from 'xlsx';
 import {
-  IContributionSummary, Contribution, ContributionType, ContributionSubType, ContributorType,
+  IContributionSummary, ContributionType, ContributionStatus, ContributionSubType, ContributorType,
 } from '@models/entity/Contribution';
 
 type OrestarEntry = {
@@ -51,7 +51,7 @@ function getContributionSubType(orestarSubType: string): ContributionSubType {
   };
   const oaeSubType = subTypeMap[orestarSubType];
   if (!oaeSubType) {
-    // reportError
+    // TODO: reportError, handle missing subtypes
     console.log(`No subtype for ${orestarSubType}`);
   }
   return oaeSubType;
@@ -70,38 +70,79 @@ function getContributorType(orestarBookType: string): ContributorType {
   };
   const oaeContributorType = contributorTypeMap[orestarBookType];
   if (!oaeContributorType) {
+    // TODO: reportError, do we want a default for when bookType is undefined?
     console.log(`No contributorType for ${orestarBookType}`);
   }
   return oaeContributorType;
 }
 
-export function readXml(): any {
-  const workbook = XLSX.readFile('temp/XcelCNESearch.xls', {
+export function readXls(xlsFilename: string): any {
+  const workbook = XLSX.readFile(xlsFilename, {
     bookVBA: true,
     WTF: true,
     type: 'file',
   });
-  const sheetList = workbook.SheetNames;
-  const jsonFile: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetList[0]]);
-  jsonFile.forEach((orestarEntry: OrestarEntry) => {
-    // Look into the following: Tran Status, Filer,
-    const oaeEntry: Contribution = {
+  const sheetName = workbook.SheetNames[0];
+  const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+  const contributionData = orestarData.map((orestarEntry: OrestarEntry) => {
+    // TODO: Look into the following:
+    // Tran Status, Filer Info (Id, Name, Date), Attest Info (Name, Date), Review Info (Name, Date)
+    const oaeEntry: IContributionSummary = {
+      // These fields are required for the type...
+      // id: 12,
+      // createdAt: new Date(),
+      // updatedAt: new Date(),
+      // status: ContributionStatus.PROCESSED,
+
       orestarOriginalId: orestarEntry['Original Id'],
       orestarTransactionId: orestarEntry['Tran Id'],
-      date: new Date(orestarEntry['Tran Date']),
+
       type: ContributionType.CONTRIBUTION,
       subType: getContributionSubType(orestarEntry['Sub Type']),
-      name: orestarEntry['Contributor/Payee'],
+      contributorType: orestarEntry['Book Type'] ? getContributorType(orestarEntry['Book Type']) : undefined,
+
+      date: new Date(orestarEntry['Tran Date']),
       amount: orestarEntry.Amount,
-      // amount: orestarEntry['Aggregate Amount'], // do we need to track this?
-      contributorType: orestarEntry['Book Type'],
+      // amount: orestarEntry['Aggregate Amount'], // ? do we need to track this?
+
+      name: orestarEntry['Contributor/Payee'], // ? should we parse this into lastname, firstname?
       occupation: orestarEntry['Occptn Txt'],
+      employerName: orestarEntry['Emp Name'],
+      employerCity: orestarEntry['Emp City'],
+      employerState: orestarEntry['Emp State'],
+      // employerCountry: , // ? always USA? should we use orestarEntry.Country?
+
       notes: orestarEntry['Purp Desc'],
+
       address1: orestarEntry['Addr Line1'],
       address2: orestarEntry['Addr Line2'],
+      city: orestarEntry.City,
+      state: orestarEntry.State,
+      zip: orestarEntry.Zip,
+
+      // addressPoint: , // ! get from geoservice
     };
 
-    console.log(oaeEntry);
-    console.log(orestarEntry['Sub Type']);
+    // Unused Fields:
+    // 'Tran Status'
+    // 'Filer'
+    // 'Aggregate Amount': number;
+    // 'Filer Id'
+    // 'Attest By Name'
+    // 'Attest Date'
+    // 'Due Date'
+    // 'Tran Stsfd Ind'
+    // 'Filed By Name'
+    // 'Filed Date'
+    // 'Self Employ Ind'
+    // 'Country'
+    // 'Review By Name'
+    // 'Review Date'
+    // 'Contributor/Payee Committee ID'
+
+    return oaeEntry;
   });
+
+  return contributionData;
 }
