@@ -33,10 +33,10 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
   page.goto('https://secure.sos.state.or.us/orestar/gotoPublicTransactionSearch.do');
 
   const candidateInputSelector = 'input[name=cneSearchFilerCommitteeTxt]';
-  const startDateInputSelector = '#cneSearchTranStartDate'
-  const startDate = '01/01/2020'
-  const transactionTypeSelectSelector = '#cneSearchTranType'
-  const transactionType = 'C'
+  const startDateInputSelector = '#cneSearchTranStartDate';
+  const startDate = '01/01/2020';
+  const transactionTypeSelectSelector = '#cneSearchTranType';
+  const transactionType = 'C';
 
   await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 });
   console.log('done waiting for landing');
@@ -47,7 +47,7 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
 
   await page.type(candidateInputSelector, candidateName, { delay: 100 });
   await page.type(startDateInputSelector, startDate, { delay: 100 });
-  await page.select(transactionTypeSelectSelector, transactionType)
+  await page.select(transactionTypeSelectSelector, transactionType);
   // await page.screenshot({ path: 'pics/2.png' });
 
   console.log('entered search query');
@@ -96,7 +96,7 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<v
   }
 
   console.log('successfully downloaded file!!');
-  readXml()
+  readXml();
   browser.close();
 
   // TODO: do XLS parsing here.

@@ -12,7 +12,7 @@ import {
   Between,
   In,
   LessThanOrEqual,
-  MoreThanOrEqual
+  MoreThanOrEqual,
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 // import { Government } from './Government';
@@ -132,37 +132,37 @@ export class Contribution {
   updatedAt: Date;
 
   @Column({
-      type: 'enum',
-      enum: ContributionType,
-      default: ContributionType.CONTRIBUTION
+    type: 'enum',
+    enum: ContributionType,
+    default: ContributionType.CONTRIBUTION,
   })
   @IsDefined()
   type: ContributionType;
 
   @Column({
-      type: 'enum',
-      enum: ContributionSubType
+    type: 'enum',
+    enum: ContributionSubType,
   })
   @IsDefined()
   subType: ContributionSubType;
 
-//   @Column({
-//       type: 'enum',
-//       enum: OaeType,
-//       nullable: true
-//   })
-//   oaeType: OaeType;
+  //   @Column({
+  //       type: 'enum',
+  //       enum: OaeType,
+  //       nullable: true
+  //   })
+  //   oaeType: OaeType;
 
-//   @Column({
-//       type: 'enum',
-//       enum: PaymentMethod,
-//       nullable: true
-//   })
-//   paymentMethod: PaymentMethod;
+  //   @Column({
+  //       type: 'enum',
+  //       enum: PaymentMethod,
+  //       nullable: true
+  //   })
+  //   paymentMethod: PaymentMethod;
 
   @Column({
-      type: 'enum',
-      enum: ContributorType
+    type: 'enum',
+    enum: ContributorType,
   })
   @IsDefined()
   contributorType: ContributorType;
@@ -170,20 +170,20 @@ export class Contribution {
   @Column({ nullable: true })
   contrPrefix?: string;
 
-//   @Column({ nullable: true })
-//   firstName?: string;
+  //   @Column({ nullable: true })
+  //   firstName?: string;
 
-//   @Column({ nullable: true })
-//   middleInitial?: string;
+  //   @Column({ nullable: true })
+  //   middleInitial?: string;
 
-//   @Column({ nullable: true })
-//   lastName?: string;
+  //   @Column({ nullable: true })
+  //   lastName?: string;
 
-//   @Column({ nullable: true })
-//   suffix?: string;
+  //   @Column({ nullable: true })
+  //   suffix?: string;
 
-//   @Column({ nullable: true })
-//   title?: string;
+  //   @Column({ nullable: true })
+  //   title?: string;
 
   @Column({ nullable: true })
   name?: string;
@@ -223,9 +223,9 @@ export class Contribution {
   notes?: string;
 
   @Column({
-      type: 'enum',
-      enum: PhoneType,
-      nullable: true
+    type: 'enum',
+    enum: PhoneType,
+    nullable: true,
   })
   phoneType?: PhoneType;
 
@@ -233,15 +233,11 @@ export class Contribution {
   checkNumber?: string;
 
   @Column({
-      type: 'decimal',
-      transformer: {
-          to: (value: number) => {
-              return value;
-          },
-          from: (value: string) => {
-              return parseFloat(value);
-          }
-      }
+    type: 'decimal',
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
   })
   amount: number;
 
@@ -267,7 +263,7 @@ export class Contribution {
   compliant?: boolean;
 
   @Column({
-      nullable: true
+    nullable: true,
   })
   matchAmount?: number;
 
@@ -275,9 +271,9 @@ export class Contribution {
   inKindType?: InKindDescriptionType;
 
   @Column({
-      type: 'enum',
-      enum: ContributionStatus,
-      default: ContributionStatus.DRAFT
+    type: 'enum',
+    enum: ContributionStatus,
+    default: ContributionStatus.DRAFT,
   })
   @IsDefined()
   status: ContributionStatus;
@@ -298,8 +294,8 @@ export class Contribution {
   // @OneToMany(type => Activity, activity => activity.contribution)
   // activities: Activity[];
 
-//   @Column({ type: 'json', nullable: true })
-//   matchResult?: MatchAddressType;
+  //   @Column({ type: 'json', nullable: true })
+  //   matchResult?: MatchAddressType;
 
   @Column({ nullable: true })
   matchId?: string;
@@ -308,166 +304,162 @@ export class Contribution {
   matchStrength?: MatchStrength;
 
   @Column({
-      type: 'geometry',
-      nullable: true,
-      spatialFeatureType: 'Point',
-      srid: 4326
+    type: 'geometry',
+    nullable: true,
+    spatialFeatureType: 'Point',
+    srid: 4326,
   })
   addressPoint?: any; // geoJson coordinates for address
 
   public errors: ValidationError[] = [];
 
-//   @BeforeInsert()
-//   @BeforeUpdate()
-//   async validate() {
-//       await this.validateAsync();
-//       if (this.errors.length > 0) {
-//           throw new Error('contribution has one or more validation problems');
-//       }
-//   }
+  //   @BeforeInsert()
+  //   @BeforeUpdate()
+  //   async validate() {
+  //       await this.validateAsync();
+  //       if (this.errors.length > 0) {
+  //           throw new Error('contribution has one or more validation problems');
+  //       }
+  //   }
 
-//   async isValidAsync(): Promise<boolean> {
-//       await this.validateAsync();
-//       return this.errors.length === 0;
-//   }
+  //   async isValidAsync(): Promise<boolean> {
+  //       await this.validateAsync();
+  //       return this.errors.length === 0;
+  //   }
 
-//   async validateAsync(): Promise<ValidationError[]> {
-//       const errors = await validate(this);
-//       this.errors = errors;
-//       await this.validateCampaignAsync();
-//       await this.validateGovernmentAsync();
-//       this.validateType();
-//       this.validateName();
-//       this.validateMatchAmount();
-//       this.validateInKindType();
-//       this.validatePaymentType();
-//       return this.errors;
-//   }
+  //   async validateAsync(): Promise<ValidationError[]> {
+  //       const errors = await validate(this);
+  //       this.errors = errors;
+  //       await this.validateCampaignAsync();
+  //       await this.validateGovernmentAsync();
+  //       this.validateType();
+  //       this.validateName();
+  //       this.validateMatchAmount();
+  //       this.validateInKindType();
+  //       this.validatePaymentType();
+  //       return this.errors;
+  //   }
 
-//   async validateGovernmentAsync() {
-//       const g = await this.government;
-//       if (!g) {
-//           const error = new ValidationError();
-//           error.property = 'governmentId';
-//           error.constraints = { isDefined: 'governmentId should not be null or undefined' };
-//           this.errors.push(error);
-//       }
-//   }
+  //   async validateGovernmentAsync() {
+  //       const g = await this.government;
+  //       if (!g) {
+  //           const error = new ValidationError();
+  //           error.property = 'governmentId';
+  //           error.constraints = { isDefined: 'governmentId should not be null or undefined' };
+  //           this.errors.push(error);
+  //       }
+  //   }
 
-//   async validateCampaignAsync() {
-//       const c = await this.campaign;
-//       if (!c) {
-//           const error = new ValidationError();
-//           error.property = 'campaignId';
-//           error.constraints = { isDefined: 'campaignId should not be null or undefined' };
-//           this.errors.push(error);
-//       }
-//   }
+  //   async validateCampaignAsync() {
+  //       const c = await this.campaign;
+  //       if (!c) {
+  //           const error = new ValidationError();
+  //           error.property = 'campaignId';
+  //           error.constraints = { isDefined: 'campaignId should not be null or undefined' };
+  //           this.errors.push(error);
+  //       }
+  //   }
 
   validateType() {
-      if (this.type === ContributionType.CONTRIBUTION) {
-          if (
-              ![
-                  ContributionSubType.CASH,
-                  ContributionSubType.INKIND_CONTRIBUTION,
-                  ContributionSubType.INKIND_PAID_SUPERVISION,
-                  ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-                  ContributionSubType.INKIND_FORGIVEN_PERSONAL
-              ].includes(this.subType)
-          ) {
-              const error = new ValidationError();
-              error.property = 'subType';
-              error.constraints = {
-                  notAllowed: 'Type "contribution" must have a valid subType of "cash or an inkind value"'
-              };
-              this.errors.push(error);
-          }
-      } else {
-          if (
-              [
-                  ContributionSubType.CASH,
-                  ContributionSubType.INKIND_CONTRIBUTION,
-                  ContributionSubType.INKIND_PAID_SUPERVISION,
-                  ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-                  ContributionSubType.INKIND_FORGIVEN_PERSONAL
-              ].includes(this.subType)
-          ) {
-              const error = new ValidationError();
-              error.property = 'subType';
-              error.constraints = { notAllowed: 'Type "other" cannot have a subType of "cash or inkind value"' };
-              this.errors.push(error);
-          }
+    if (this.type === ContributionType.CONTRIBUTION) {
+      if (
+        ![
+          ContributionSubType.CASH,
+          ContributionSubType.INKIND_CONTRIBUTION,
+          ContributionSubType.INKIND_PAID_SUPERVISION,
+          ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+          ContributionSubType.INKIND_FORGIVEN_PERSONAL,
+        ].includes(this.subType)
+      ) {
+        const error = new ValidationError();
+        error.property = 'subType';
+        error.constraints = {
+          notAllowed: 'Type "contribution" must have a valid subType of "cash or an inkind value"',
+        };
+        this.errors.push(error);
       }
+    } else if (
+      [
+        ContributionSubType.CASH,
+        ContributionSubType.INKIND_CONTRIBUTION,
+        ContributionSubType.INKIND_PAID_SUPERVISION,
+        ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+        ContributionSubType.INKIND_FORGIVEN_PERSONAL,
+      ].includes(this.subType)
+    ) {
+      const error = new ValidationError();
+      error.property = 'subType';
+      error.constraints = { notAllowed: 'Type "other" cannot have a subType of "cash or inkind value"' };
+      this.errors.push(error);
+    }
   }
 
   validatePaymentType() {
-      if (this.type === ContributionType.CONTRIBUTION && this.subType === ContributionSubType.CASH && !this.paymentMethod) {
+    if (this.type === ContributionType.CONTRIBUTION && this.subType === ContributionSubType.CASH && !this.paymentMethod) {
       const error = new ValidationError();
       error.property = 'paymentMethod';
       error.constraints = {
-          notAllowed: 'Type "contribution" with subType "cash" must have a paymentMethod'
+        notAllowed: 'Type "contribution" with subType "cash" must have a paymentMethod',
       };
       this.errors.push(error);
-      }
+    }
   }
 
   validateName() {
-      if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
-          if (!this.lastName || this.lastName.trim() === '') {
-              const error = new ValidationError();
-              error.property = 'lastName';
-              error.constraints = { isDefined: 'lastName should not be null or undefined' };
-              this.errors.push(error);
-          }
-
-          if (!this.firstName || this.firstName.trim() === '') {
-              const error = new ValidationError();
-              error.property = 'firstName';
-              error.constraints = { isDefined: 'firstName should not be null or undefined' };
-              this.errors.push(error);
-          }
-      } else {
-          if (!this.name || this.name.trim() === '') {
-              const error = new ValidationError();
-              error.property = 'name';
-              error.constraints = { isDefined: 'name should not be null or undefined' };
-              this.errors.push(error);
-          }
+    if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
+      if (!this.lastName || this.lastName.trim() === '') {
+        const error = new ValidationError();
+        error.property = 'lastName';
+        error.constraints = { isDefined: 'lastName should not be null or undefined' };
+        this.errors.push(error);
       }
+
+      if (!this.firstName || this.firstName.trim() === '') {
+        const error = new ValidationError();
+        error.property = 'firstName';
+        error.constraints = { isDefined: 'firstName should not be null or undefined' };
+        this.errors.push(error);
+      }
+    } else if (!this.name || this.name.trim() === '') {
+      const error = new ValidationError();
+      error.property = 'name';
+      error.constraints = { isDefined: 'name should not be null or undefined' };
+      this.errors.push(error);
+    }
   }
 
   validateMatchAmount() {
-      if (this.matchAmount && this.matchAmount > this.amount) {
-          const error = new ValidationError();
-          error.property = 'matchAmount';
-          error.constraints = { notAllowed: 'Cannot match more than contributed amount' };
-          this.errors.push(error);
-      }
+    if (this.matchAmount && this.matchAmount > this.amount) {
+      const error = new ValidationError();
+      error.property = 'matchAmount';
+      error.constraints = { notAllowed: 'Cannot match more than contributed amount' };
+      this.errors.push(error);
+    }
   }
 
   validateContributorAddress() {
-      if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
-          return this.address1 && this.city && this.zip && this.state;
-      }
-      return true;
+    if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
+      return this.address1 && this.city && this.zip && this.state;
+    }
+    return true;
   }
 
   isInKind() {
-      return [
-          ContributionSubType.INKIND_CONTRIBUTION,
-          ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-          ContributionSubType.INKIND_FORGIVEN_PERSONAL,
-          ContributionSubType.INKIND_PAID_SUPERVISION
-      ].includes(this.subType);
+    return [
+      ContributionSubType.INKIND_CONTRIBUTION,
+      ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+      ContributionSubType.INKIND_FORGIVEN_PERSONAL,
+      ContributionSubType.INKIND_PAID_SUPERVISION,
+    ].includes(this.subType);
   }
 
   validateInKindType() {
-      if (this.isInKind() && !this.inKindType) {
-          const error = new ValidationError();
-          error.property = 'inKindType';
-          error.constraints = { notAllowed: 'inKindType must be present if subType is an inkind type' };
-          this.errors.push(error);
-      }
+    if (this.isInKind() && !this.inKindType) {
+      const error = new ValidationError();
+      error.property = 'inKindType';
+      error.constraints = { notAllowed: 'inKindType must be present if subType is an inkind type' };
+      this.errors.push(error);
+    }
   }
 
 //   toJSON(isGov: boolean = false) {
@@ -506,7 +498,7 @@ export const contributionSummaryFields = <const>[
   'subType',
   'inKindType',
   'contributorType',
-//   'oaeType',
+  //   'oaeType',
   'contrPrefix',
   'firstName',
   'middleInitial',
@@ -537,10 +529,9 @@ export const contributionSummaryFields = <const>[
   'paymentMethod',
   'date',
   'occupationLetterDate',
-  'addressPoint'
+  'addressPoint',
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
-
 
 export const contributionGovSummaryFields = <const>[
   'id',
@@ -586,7 +577,7 @@ export const contributionGovSummaryFields = <const>[
   'matchId',
   'matchAmount',
   'matchStrength',
-  'matchResult'
+  'matchResult',
 ];
 
 // export type IContributionGovSummary = Pick<Contribution, typeof contributionGovSummaryFields[number]>;
@@ -604,16 +595,15 @@ export interface IContributionGeoJson {
       date: string;
       campaign: {
           name: string;
-          id: string
+          id: string;
       };
-      contributorName: string
+      contributorName: string;
   };
   geometry: {
       type: 'Point';
-      coordinates: [number, number]
+      coordinates: [number, number];
   };
 }
-
 
 export interface IContributionsGeoJson {
   type: 'FeatureCollection';
@@ -680,7 +670,6 @@ export interface IContributionsGeoJson {
 
 //           query.order = { [sort.field]: sort.direction };
 //       }
-
 
 //       const contributions = (await contributionRepository.find(removeUndefined(query)) as any).map((item: any): any => {
 //           const json = item.toJSON(isGovQuery);

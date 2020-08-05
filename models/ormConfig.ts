@@ -1,4 +1,4 @@
-import { ConnectionOptions } from 'typeorm'
+import { ConnectionOptions } from 'typeorm';
 
 const ORMConfig: ConnectionOptions = {
   type: 'postgres',
@@ -8,12 +8,12 @@ const ORMConfig: ConnectionOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: [
-    __dirname + '/entity/*{.ts,.js}',
+    `${__dirname}/entity/*{.ts,.js}`,
   ],
-  synchronize: process.env.NODE_ENV === 'production' ? false : true,
+  synchronize: process.env.NODE_ENV !== 'production',
   logging: false,
   cli: {
-    entitiesDir: 'models/entity'
+    entitiesDir: 'models/entity',
   },
 };
 export default ORMConfig;

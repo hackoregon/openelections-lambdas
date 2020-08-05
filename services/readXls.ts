@@ -1,5 +1,7 @@
 import XLSX from 'xlsx';
-import { IContributionSummary, Contribution, ContributionType, ContributionSubType, ContributorType } from 'models/entity/Contribution';
+import {
+  IContributionSummary, Contribution, ContributionType, ContributionSubType, ContributorType,
+} from '@models/entity/Contribution';
 
 type OrestarEntry = {
   'Tran Id': string; // 7 digit number
@@ -37,7 +39,7 @@ type OrestarEntry = {
   'Purp Desc'?: string;
 }
 
-function getContributionSubType (orestarSubType: string): ContributionSubType {
+function getContributionSubType(orestarSubType: string): ContributionSubType {
   const subTypeMap = {
     'Cash Contribution': ContributionSubType.CASH,
     'In-Kind Contribution': ContributionSubType.INKIND_CONTRIBUTION,
@@ -46,43 +48,43 @@ function getContributionSubType (orestarSubType: string): ContributionSubType {
     // 'Loan Received (Non-Exempt)': ContributionSubType.INKIND_CONTRIBUTION,
     // 'Pledge of Loan': ContributionSubType.INKIND_CONTRIBUTION,
     // 'Pledge of In-Kind': ContributionSubType.INKIND_CONTRIBUTION
-  }
-  const oaeSubType = subTypeMap[orestarSubType]
+  };
+  const oaeSubType = subTypeMap[orestarSubType];
   if (!oaeSubType) {
     // reportError
-    console.log(`No subtype for ${orestarSubType}`)
+    console.log(`No subtype for ${orestarSubType}`);
   }
-  return oaeSubType
+  return oaeSubType;
 }
 
-function getContributorType (orestarBookType: string): ContributorType {
+function getContributorType(orestarBookType: string): ContributorType {
   const contributorTypeMap = {
-    'Individual': ContributorType.INDIVIDUAL,
+    Individual: ContributorType.INDIVIDUAL,
     'Business Entity': ContributorType.BUSINESS,
     'Labor Organization': ContributorType.LABOR,
     'Political Committee': ContributorType.POLITICAL_COMMITTEE,
-    'Other': ContributorType.OTHER,
+    Other: ContributorType.OTHER,
     'Candidate & Immediate Family': ContributorType.FAMILY,
     'Unregistered Committee': ContributorType.UNREGISTERED,
-    'Political Party Committee': ContributorType.POLITICAL_PARTY
-  }
-  const oaeContributorType = contributorTypeMap[orestarBookType]
+    'Political Party Committee': ContributorType.POLITICAL_PARTY,
+  };
+  const oaeContributorType = contributorTypeMap[orestarBookType];
   if (!oaeContributorType) {
-    console.log(`No contributorType for ${orestarBookType}`)
+    console.log(`No contributorType for ${orestarBookType}`);
   }
-  return oaeContributorType
+  return oaeContributorType;
 }
 
-export function readXml (): any {
+export function readXml(): any {
   const workbook = XLSX.readFile('temp/XcelCNESearch.xls', {
     bookVBA: true,
     WTF: true,
-    type: 'file'
-  })
-  const sheetList = workbook.SheetNames
-  const jsonFile: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetList[0]])
+    type: 'file',
+  });
+  const sheetList = workbook.SheetNames;
+  const jsonFile: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetList[0]]);
   jsonFile.forEach((orestarEntry: OrestarEntry) => {
-    // Look into the following: Tran Status, Filer, 
+    // Look into the following: Tran Status, Filer,
     const oaeEntry: Contribution = {
       orestarOriginalId: orestarEntry['Original Id'],
       orestarTransactionId: orestarEntry['Tran Id'],
@@ -90,16 +92,16 @@ export function readXml (): any {
       type: ContributionType.CONTRIBUTION,
       subType: getContributionSubType(orestarEntry['Sub Type']),
       name: orestarEntry['Contributor/Payee'],
-      amount: orestarEntry['Amount'],
+      amount: orestarEntry.Amount,
       // amount: orestarEntry['Aggregate Amount'], // do we need to track this?
       contributorType: orestarEntry['Book Type'],
       occupation: orestarEntry['Occptn Txt'],
       notes: orestarEntry['Purp Desc'],
       address1: orestarEntry['Addr Line1'],
-      address2: orestarEntry['Addr Line2']
-    }
-    
-    console.log(oaeEntry)
-    console.log(orestarEntry['Sub Type'])
-  })
+      address2: orestarEntry['Addr Line2'],
+    };
+
+    console.log(oaeEntry);
+    console.log(orestarEntry['Sub Type']);
+  });
 }

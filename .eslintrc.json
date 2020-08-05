@@ -14,8 +14,9 @@
   "root": true,
   "globals": {},
   "rules": {
-    "import/no-unresolved": [2, {"commonjs": true, "amd": true}],
+    "import/extensions": "off",
     "import/prefer-default-export": "off",
+    "import/no-unresolved": [2, {"commonjs": true, "amd": true}],
     "max-len": ["error", {
       "code":  150,
       "ignoreComments":  true,
@@ -23,7 +24,10 @@
       "ignoreUrls": true,
       "ignoreStrings": true,
       "ignoreTemplateLiterals": true
-    }]
+    }],
+    "no-underscore-dangle": "off",
+    "radix": "warn",
+    "@typescript-eslint/interface-name-prefix": "off"
   },
   "parser": "@typescript-eslint/parser",
   "env": {
@@ -35,9 +39,10 @@
     "import/resolver": {
       "alias": {
         "map": [
+          ["@models", "./models"],
+          ["@services", "./services"],
           ["@src", "./src"],
-          ["@tests", "./tests"],
-          ["@services", "./services"]
+          ["@tests", "./tests"]
         ],
         "extensions": [
           ".ts",

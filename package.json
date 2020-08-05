@@ -6,6 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=test ./node_modules/.bin/jest --ci --verbose",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lintfix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "buildtest": "tsc --noEmit",
     "offline": "SLS_DEBUG=* sls offline --noTimeout"
   },
