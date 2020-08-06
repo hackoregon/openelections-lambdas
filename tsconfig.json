@@ -10,11 +10,14 @@
     "outDir": "lib",
     "inlineSources": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "sourceRoot": "/",
     "baseUrl": "./",
     "paths": {
-      "@src/*": ["src/*"],
+      "@models/*": ["models/*"],
       "@services/*": ["services/*"],
+      "@src/*": ["src/*"],
       "@tests/*": ["tests/*"]
     }
   },
