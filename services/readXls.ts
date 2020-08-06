@@ -1,6 +1,6 @@
 import XLSX from 'xlsx';
 import {
-  IContributionSummary, ContributionType, ContributionStatus, ContributionSubType, ContributorType,
+  IContributionSummary, ContributionType, ContributionStatus, ContributionSubType, ContributorType, Contribution,
 } from '@models/entity/Contribution';
 
 type OrestarEntry = {
@@ -88,41 +88,43 @@ export function readXls(xlsFilename: string): any {
   const contributionData = orestarData.map((orestarEntry: OrestarEntry) => {
     // TODO: Look into the following:
     // Tran Status, Filer Info (Id, Name, Date), Attest Info (Name, Date), Review Info (Name, Date)
-    const oaeEntry: IContributionSummary = {
+    const oaeEntry = new Contribution()
+
       // These fields are required for the type...
       // id: 12,
       // createdAt: new Date(),
       // updatedAt: new Date(),
       // status: ContributionStatus.PROCESSED,
 
-      orestarOriginalId: orestarEntry['Original Id'],
-      orestarTransactionId: orestarEntry['Tran Id'],
+    oaeEntry.orestarOriginalId = orestarEntry['Original Id'];
+    oaeEntry.orestarTransactionId = orestarEntry['Tran Id'];
 
-      type: ContributionType.CONTRIBUTION,
-      subType: getContributionSubType(orestarEntry['Sub Type']),
-      contributorType: orestarEntry['Book Type'] ? getContributorType(orestarEntry['Book Type']) : undefined,
+    oaeEntry.type = ContributionType.CONTRIBUTION;
+    oaeEntry.subType = getContributionSubType(orestarEntry['Sub Type']);
+    oaeEntry.contributorType = orestarEntry['Book Type'] ? getContributorType(orestarEntry['Book Type']) : undefined;
 
-      date: new Date(orestarEntry['Tran Date']),
-      amount: orestarEntry.Amount,
-      // amount: orestarEntry['Aggregate Amount'], // ? do we need to track this?
+    oaeEntry.date = new Date(orestarEntry['Tran Date']);
+    oaeEntry.amount = orestarEntry.Amount;
+    // =amount: orestarEntry['Aggregate Amount'] // ? do we need to track this?;
 
-      name: orestarEntry['Contributor/Payee'], // ? should we parse this into lastname, firstname?
-      occupation: orestarEntry['Occptn Txt'],
-      employerName: orestarEntry['Emp Name'],
-      employerCity: orestarEntry['Emp City'],
-      employerState: orestarEntry['Emp State'],
-      // employerCountry: , // ? always USA? should we use orestarEntry.Country?
+    oaeEntry.name = orestarEntry['Contributor/Payee'] // ? should we parse this into lastname firstname?;
+    oaeEntry.occupation = orestarEntry['Occptn Txt'];
+    oaeEntry.employerName = orestarEntry['Emp Name'];
+    oaeEntry.employerCity = orestarEntry['Emp City'];
+    oaeEntry.employerState = orestarEntry['Emp State'];
+    // =employerCountry:  // ? always USA? should we use orestarEntry.Country?;
 
-      notes: orestarEntry['Purp Desc'],
+    oaeEntry.notes = orestarEntry['Purp Desc'];
 
-      address1: orestarEntry['Addr Line1'],
-      address2: orestarEntry['Addr Line2'],
-      city: orestarEntry.City,
-      state: orestarEntry.State,
-      zip: orestarEntry.Zip,
+    oaeEntry.address1 = orestarEntry['Addr Line1'];
+    oaeEntry.address2 = orestarEntry['Addr Line2'];
+    oaeEntry.city = orestarEntry.City;
+    oaeEntry.state = orestarEntry.State;
+    oaeEntry.zip = orestarEntry.Zip;
+    oaeEntry.country = orestarEntry['Country']
 
-      // addressPoint: , // ! get from geoservice
-    };
+    // addressPoint: , // ! get from geoservice
+
 
     // Unused Fields:
     // 'Tran Status'
@@ -136,7 +138,6 @@ export function readXls(xlsFilename: string): any {
     // 'Filed By Name'
     // 'Filed Date'
     // 'Self Employ Ind'
-    // 'Country'
     // 'Review By Name'
     // 'Review Date'
     // 'Contributor/Payee Committee ID'

@@ -168,8 +168,8 @@ export class Contribution {
   @IsDefined()
   contributorType: ContributorType;
 
-  @Column({ nullable: true })
-  contrPrefix?: string;
+  // @Column({ nullable: true })
+  // contrPrefix?: string;
 
   //   @Column({ nullable: true })
   //   firstName?: string;
@@ -211,27 +211,27 @@ export class Contribution {
   @Column()
   country: string;
 
-  @Column({ nullable: true })
-  county?: string;
+  // @Column({ nullable: true })
+  // county?: string;
 
-  @Column({ nullable: true })
-  email?: string;
+  // @Column({ nullable: true })
+  // email?: string;
 
-  @Column({ nullable: true })
-  phone?: string;
+  // @Column({ nullable: true })
+  // phone?: string;
 
   @Column({ nullable: true })
   notes?: string;
 
-  @Column({
-    type: 'enum',
-    enum: PhoneType,
-    nullable: true,
-  })
-  phoneType?: PhoneType;
+  // @Column({
+  //   type: 'enum',
+  //   enum: PhoneType,
+  //   nullable: true,
+  // })
+  // phoneType?: PhoneType;
 
-  @Column({ nullable: true })
-  checkNumber?: string;
+  // @Column({ nullable: true })
+  // checkNumber?: string;
 
   @Column({
     type: 'decimal',
@@ -242,8 +242,8 @@ export class Contribution {
   })
   amount: number;
 
-  @Column({ nullable: true })
-  inKindDescription?: string;
+  // @Column({ nullable: true })
+  // inKindDescription?: string;
 
   @Column({ nullable: true })
   occupation?: string;
@@ -257,34 +257,34 @@ export class Contribution {
   @Column({ nullable: true })
   employerState?: string;
 
-  @Column({ nullable: true })
-  employerCountry?: string;
+  // @Column({ nullable: true })
+  // employerCountry?: string;
 
-  @Column({ nullable: true })
-  compliant?: boolean;
+  // @Column({ nullable: true })
+  // compliant?: boolean;
 
-  @Column({
-    nullable: true,
-  })
-  matchAmount?: number;
+  // @Column({
+  //   nullable: true,
+  // })
+  // matchAmount?: number;
 
-  @Column({ nullable: true, type: 'enum', enum: InKindDescriptionType })
-  inKindType?: InKindDescriptionType;
+  // @Column({ nullable: true, type: 'enum', enum: InKindDescriptionType })
+  // inKindType?: InKindDescriptionType;
 
-  @Column({
-    type: 'enum',
-    enum: ContributionStatus,
-    default: ContributionStatus.DRAFT,
-  })
-  @IsDefined()
-  status: ContributionStatus;
+  // @Column({
+  //   type: 'enum',
+  //   enum: ContributionStatus,
+  //   default: ContributionStatus.DRAFT,
+  // })
+  // @IsDefined()
+  // status: ContributionStatus;
 
   @Column()
   @IsDefined()
   date: Date;
 
-  @Column({ nullable: true })
-  occupationLetterDate?: Date;
+  // @Column({ nullable: true })
+  // occupationLetterDate?: Date;
 
   // @ManyToOne(type => Government, government => government.contributions)
   // government: Government;
@@ -298,11 +298,11 @@ export class Contribution {
   //   @Column({ type: 'json', nullable: true })
   //   matchResult?: MatchAddressType;
 
-  @Column({ nullable: true })
-  matchId?: string;
+  // @Column({ nullable: true })
+  // matchId?: string;
 
-  @Column({ type: 'enum', enum: MatchStrength, nullable: true })
-  matchStrength?: MatchStrength;
+  // @Column({ type: 'enum', enum: MatchStrength, nullable: true })
+  // matchStrength?: MatchStrength;
 
   @Column({
     type: 'geometry',
@@ -395,45 +395,11 @@ export class Contribution {
     }
   }
 
-  validatePaymentType() {
-    if (this.type === ContributionType.CONTRIBUTION && this.subType === ContributionSubType.CASH && !this.paymentMethod) {
-      const error = new ValidationError();
-      error.property = 'paymentMethod';
-      error.constraints = {
-        notAllowed: 'Type "contribution" with subType "cash" must have a paymentMethod',
-      };
-      this.errors.push(error);
-    }
-  }
-
   validateName() {
-    if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
-      if (!this.lastName || this.lastName.trim() === '') {
-        const error = new ValidationError();
-        error.property = 'lastName';
-        error.constraints = { isDefined: 'lastName should not be null or undefined' };
-        this.errors.push(error);
-      }
-
-      if (!this.firstName || this.firstName.trim() === '') {
-        const error = new ValidationError();
-        error.property = 'firstName';
-        error.constraints = { isDefined: 'firstName should not be null or undefined' };
-        this.errors.push(error);
-      }
-    } else if (!this.name || this.name.trim() === '') {
+    if (!this.name || this.name.trim() === '') {
       const error = new ValidationError();
       error.property = 'name';
       error.constraints = { isDefined: 'name should not be null or undefined' };
-      this.errors.push(error);
-    }
-  }
-
-  validateMatchAmount() {
-    if (this.matchAmount && this.matchAmount > this.amount) {
-      const error = new ValidationError();
-      error.property = 'matchAmount';
-      error.constraints = { notAllowed: 'Cannot match more than contributed amount' };
       this.errors.push(error);
     }
   }
@@ -452,15 +418,6 @@ export class Contribution {
       ContributionSubType.INKIND_FORGIVEN_PERSONAL,
       ContributionSubType.INKIND_PAID_SUPERVISION,
     ].includes(this.subType);
-  }
-
-  validateInKindType() {
-    if (this.isInKind() && !this.inKindType) {
-      const error = new ValidationError();
-      error.property = 'inKindType';
-      error.constraints = { notAllowed: 'inKindType must be present if subType is an inkind type' };
-      this.errors.push(error);
-    }
   }
 
 //   toJSON(isGov: boolean = false) {
@@ -493,6 +450,7 @@ export class Contribution {
 export const contributionSummaryFields = <const>[
   'orestarOriginalId',
   'orestarTransactionId',
+  'country',
 
   'id',
   'amount',
@@ -500,10 +458,10 @@ export const contributionSummaryFields = <const>[
   'updatedAt',
   'type',
   'subType',
-  'inKindType',
+  // 'inKindType',
   'contributorType',
   //   'oaeType',
-  'contrPrefix',
+  // 'contrPrefix',
   // 'firstName',
   // 'middleInitial',
   // 'lastName',
@@ -515,24 +473,24 @@ export const contributionSummaryFields = <const>[
   'city',
   'state',
   'zip',
-  'county',
-  'email',
-  'phone',
-  'phoneType',
-  'checkNumber',
-  'inKindType',
+  // 'county',
+  // 'email',
+  // 'phone',
+  // 'phoneType',
+  // 'checkNumber',
+  // 'inKindType',
   'occupation',
   'employerName',
   'employerCity',
   'employerState',
-  'employerCountry',
-  'compliant',
-  'matchAmount',
-  'status',
+  // 'employerCountry',
+  // 'compliant',
+  // 'matchAmount',
+  // 'status',
   'notes',
   // 'paymentMethod',
   'date',
-  'occupationLetterDate',
+  // 'occupationLetterDate',
   'addressPoint',
 ];
 export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
