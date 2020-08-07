@@ -76,7 +76,7 @@ function getContributorType(orestarBookType: string): ContributorType {
   return oaeContributorType;
 }
 
-export function readXls(xlsFilename: string): any {
+export function readXls(xlsFilename: string): Contribution[] {
   const workbook = XLSX.readFile(xlsFilename, {
     bookVBA: true,
     WTF: true,
