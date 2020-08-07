@@ -86,15 +86,7 @@ export function readXls(xlsFilename: string): any {
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
   const contributionData = orestarData.map((orestarEntry: OrestarEntry) => {
-    // TODO: Look into the following:
-    // Tran Status, Filer Info (Id, Name, Date), Attest Info (Name, Date), Review Info (Name, Date)
-    const oaeEntry = new Contribution()
-
-      // These fields are required for the type...
-      // id: 12,
-      // createdAt: new Date(),
-      // updatedAt: new Date(),
-      // status: ContributionStatus.PROCESSED,
+    const oaeEntry = new Contribution();
 
     oaeEntry.orestarOriginalId = orestarEntry['Original Id'];
     oaeEntry.orestarTransactionId = orestarEntry['Tran Id'];
@@ -105,14 +97,14 @@ export function readXls(xlsFilename: string): any {
 
     oaeEntry.date = new Date(orestarEntry['Tran Date']);
     oaeEntry.amount = orestarEntry.Amount;
-    // =amount: orestarEntry['Aggregate Amount'] // ? do we need to track this?;
+    // amount: orestarEntry['Aggregate Amount'] // ? do we need to track this?;
 
-    oaeEntry.name = orestarEntry['Contributor/Payee'] // ? should we parse this into lastname firstname?;
+    oaeEntry.name = orestarEntry['Contributor/Payee']; // ? should we parse this into lastname firstname?
     oaeEntry.occupation = orestarEntry['Occptn Txt'];
     oaeEntry.employerName = orestarEntry['Emp Name'];
     oaeEntry.employerCity = orestarEntry['Emp City'];
     oaeEntry.employerState = orestarEntry['Emp State'];
-    // =employerCountry:  // ? always USA? should we use orestarEntry.Country?;
+    // employerCountry:  // ? always USA? should we use orestarEntry.Country?
 
     oaeEntry.notes = orestarEntry['Purp Desc'];
 
@@ -121,10 +113,9 @@ export function readXls(xlsFilename: string): any {
     oaeEntry.city = orestarEntry.City;
     oaeEntry.state = orestarEntry.State;
     oaeEntry.zip = orestarEntry.Zip;
-    oaeEntry.country = orestarEntry['Country']
+    oaeEntry.country = orestarEntry.Country;
 
     // addressPoint: , // ! get from geoservice
-
 
     // Unused Fields:
     // 'Tran Status'

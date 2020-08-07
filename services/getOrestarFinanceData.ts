@@ -96,5 +96,5 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<s
 
   browser.close();
 
-  return xlsFilename
+  return xlsFilename;
 };
