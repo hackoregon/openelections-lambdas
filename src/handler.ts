@@ -7,7 +7,8 @@ import 'source-map-support/register';
 export const orestarScraper: APIGatewayProxyHandler = async () => {
   const xlsFilename = await getOrestarFinanceData({ candidateName: 'Ted Wheeler' });
   const contributions = readXls(xlsFilename);
-  const geocodedContributions = geocodeContributions(contributions);
+  console.log('got contributions');
+  const geocodedContributions = await geocodeContributions(contributions.slice(0, 1));
   return {
     statusCode: 200,
     body: JSON.stringify({

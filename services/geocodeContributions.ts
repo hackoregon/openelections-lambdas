@@ -80,6 +80,7 @@ async function geocodeAddressAsync(attrs: {
 
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address1},+${attrs.city},+${attrs.state},+${attrs.zip}&key=${process.env.GOOGLE_GIS_KEY}`;
   const request = await fetch(url);
+  console.log('fetching:', url);
   if (request.ok) {
     const json = await request.json() as GoogleResult;
     if (json.status === 'OK' && json.results[0]) {
@@ -98,35 +99,52 @@ const MAX_QUERIES_PER_SEC = 25;
  * NOTE: modifies original objects.
  */
 export async function geocodeContributions(contributions: Contribution[]): Promise<Contribution[]> {
-  const geocodedContributions = [];
+  if (contributions.length === 0) return [];
+  console.log('geocoding!', contributions.length);
 
-  let lastQueryTime = Date.now() - 1000; // a second ago
-  let batchesQueried = 0;
+  // create batches of MAX_QUERIES_PER_SEC Promises that fetch geocode data
+  const batches: Promise<Contribution>[][] = [];
+  while (contributions.length !== 0) {
+    batches.push(
+      contributions.splice(0, MAX_QUERIES_PER_SEC).map((contribution) => new Promise((resolve) => {
+        console.log('doing it!');
+        const {
+          address1,
+          city,
+          state,
+          zip,
+        } = contribution;
 
-  while (geocodedContributions.length !== contributions.length) {
-    const secondHasPassedSinceLastQuery = Date.now() - lastQueryTime > 1000;
-    if (secondHasPassedSinceLastQuery) {
-      const lastQueryIndex = MAX_QUERIES_PER_SEC * batchesQueried;
-
-      // send next batch of geocoding queries
-      contributions.slice(lastQueryIndex, lastQueryIndex + MAX_QUERIES_PER_SEC)
-        .forEach(async (contribution) => {
-          const {
-            address1,
-            city,
-            state,
-            zip,
-          } = contribution;
+        return geocodeAddressAsync({
+          address1,
+          city,
+          state,
+          zip,
+        }).then((addressPoint) => {
           // eslint-disable-next-line no-param-reassign
-          contribution.addressPoint = await geocodeAddressAsync({
-            address1, city, state, zip,
-          });
-          geocodedContributions.push(contribution);
+          contribution.addressPoint = addressPoint;
+          console.log('data!', contribution.addressPoint);
+          resolve(contribution);
         });
-
-      batchesQueried += 1;
-      lastQueryTime = Date.now();
-    }
+      })),
+    );
   }
+
+  const batchResults: Contribution[][] = await Promise.all(
+    batches.map((batch, i): Promise<Contribution[]> => new Promise((resolve) => {
+      setTimeout(async () => {
+        console.log('sending batch ', i);
+        const geocoded = await Promise.all(batch);
+        resolve(geocoded);
+      }, 1000 * i);
+    })),
+  );
+
+  const geocodedContributions = batchResults.flat();
+
+  console.log(geocodedContributions);
+
+  console.log('done geocoding!!');
+
   return geocodedContributions;
 }

@@ -86,7 +86,8 @@ export function readXls(xlsFilename: string): Contribution[] {
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
   const contributionData = orestarData.map((orestarEntry: OrestarEntry) => {
-    const oaeEntry = new Contribution();
+    // const oaeEntry = new Contribution();
+    const oaeEntry: any = {};
 
     oaeEntry.orestarOriginalId = orestarEntry['Original Id'];
     oaeEntry.orestarTransactionId = orestarEntry['Tran Id'];
