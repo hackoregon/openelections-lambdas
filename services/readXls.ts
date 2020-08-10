@@ -59,7 +59,7 @@ export type OrestarContribution = {
   state: string;
   zip: string;
   country: string;
-  addressPoint?: number[]
+  addressPoint?: number[];
 }
 
 function getContributionSubType(orestarSubType: string): ContributionSubType {
@@ -109,7 +109,6 @@ export function readXls(xlsFilename: string): OrestarContribution[] {
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
   const contributionData = orestarData.map((orestarEntry: OrestarEntry) => {
-    
     const oaeEntry: OrestarContribution = {
       orestarOriginalId: orestarEntry['Original Id'],
       orestarTransactionId: orestarEntry['Tran Id'],
@@ -132,7 +131,7 @@ export function readXls(xlsFilename: string): OrestarContribution[] {
       state: orestarEntry.State,
       zip: orestarEntry.Zip,
       country: orestarEntry.Country,
-    }
+    };
     // Unused Fields:
     // 'Tran Status'
     // 'Filer'
