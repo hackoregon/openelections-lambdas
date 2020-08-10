@@ -110,6 +110,7 @@ export enum PaymentMethod {
   ETF = 'electronic_funds_transfer',
   DEBIT = 'debit'
 }
+
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity({ name: 'external contributions' })
 export class Contribution {
