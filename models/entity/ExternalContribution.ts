@@ -112,8 +112,8 @@ export enum PaymentMethod {
 }
 
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
-@Entity({ name: 'external contributions' })
-export class Contribution {
+@Entity('external_contributions')
+export class ExternalContribution {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -494,7 +494,7 @@ export const contributionSummaryFields = <const>[
   // 'occupationLetterDate',
   'addressPoint',
 ];
-export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
+export type IContributionSummary = Pick<ExternalContribution, typeof contributionSummaryFields[number]>;
 
 // export const contributionGovSummaryFields = <const>[
 //   'id',

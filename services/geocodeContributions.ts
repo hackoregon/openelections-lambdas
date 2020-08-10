@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import * as fetch from 'node-fetch';
-import { Contribution } from '@models/entity/Contribution';
+import { ExternalContribution } from '@models/entity/ExternalContribution';
 import { OrestarContribution } from './readXls';
 
 export interface GoogleResult {

@@ -1,7 +1,7 @@
 import XLSX from 'xlsx';
 import {
-  IContributionSummary, ContributionType, ContributionStatus, ContributionSubType, ContributorType, Contribution,
-} from '@models/entity/Contribution';
+  IContributionSummary, ContributionType, ContributionStatus, ContributionSubType, ContributorType, ExternalContribution,
+} from '@models/entity/ExternalContribution';
 
 type OrestarEntry = {
   'Tran Id': string; // 7 digit number

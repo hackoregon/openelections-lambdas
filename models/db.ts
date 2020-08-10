@@ -1,4 +1,4 @@
-import { createConnection, Connection, getConnectionManager } from 'typeorm';
+import { createConnection, Connection, getConnection } from 'typeorm';
 import ORMConfig from './ormConfig';
 
 export default async (): Promise<Connection> => {
@@ -11,8 +11,8 @@ export default async (): Promise<Connection> => {
     }
     return connection;
   } catch (error) {
+    console.log('error', error.message);
     console.log('Using existing default db connection.');
-    const existingConnection = getConnectionManager().get('default');
-    return existingConnection;
+    return getConnection('default');
   }
 };
