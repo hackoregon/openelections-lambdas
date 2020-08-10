@@ -31,6 +31,7 @@ provider:
     DEBUG: '*'
     NODE_ENV: ${self:provider.stage}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    GOOGLE_GIS_KEY: ${file(./.config.json):GOOGLE_GIS_KEY}
   tracing:
     lambda: true
   # iamRoleStatements:
