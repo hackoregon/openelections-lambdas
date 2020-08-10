@@ -323,23 +323,23 @@ export class Contribution {
   //       }
   //   }
 
-  //   async isValidAsync(): Promise<boolean> {
-  //       await this.validateAsync();
-  //       return this.errors.length === 0;
-  //   }
+    async isValidAsync(): Promise<boolean> {
+        await this.validateAsync();
+        return this.errors.length === 0;
+    }
 
-  //   async validateAsync(): Promise<ValidationError[]> {
-  //       const errors = await validate(this);
-  //       this.errors = errors;
-  //       await this.validateCampaignAsync();
-  //       await this.validateGovernmentAsync();
-  //       this.validateType();
-  //       this.validateName();
-  //       this.validateMatchAmount();
-  //       this.validateInKindType();
-  //       this.validatePaymentType();
-  //       return this.errors;
-  //   }
+    async validateAsync(): Promise<ValidationError[]> {
+        const errors = await validate(this);
+        this.errors = errors;
+        // await this.validateCampaignAsync();
+        // await this.validateGovernmentAsync();
+        // this.validateType();
+        // this.validateName();
+        // this.validateMatchAmount();
+        // this.validateInKindType();
+        // this.validatePaymentType();
+        return this.errors;
+    }
 
   //   async validateGovernmentAsync() {
   //       const g = await this.government;

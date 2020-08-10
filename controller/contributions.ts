@@ -6,9 +6,9 @@ export async function addContributions (contributions: Contribution[]): Promise<
     const connection = await db();
     const contributionRepository = connection.getRepository(Contribution)
     await Promise.all(contributions.map( async (contribution: Contribution) => {
-      const oaeContribution = new Contribution()
-      oaeContribution = {
-        ...contribution
+      const oaeContribution = {
+        ...contribution,
+        ...new Contribution()
       }
       if (await oaeContribution.isValidAsync()) {
         contributionRepository.update()

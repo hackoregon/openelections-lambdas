@@ -86,29 +86,24 @@ export function readXls(xlsFilename: string): Contribution[] {
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
   const contributionData = orestarData.map((orestarEntry: OrestarEntry) => {
-    // const oaeEntry = new Contribution();
-    const oaeEntry: any = {};
+    
+    const oaeEntry: any = {}; // TODO: Add type here (basically Contribution minus id)
 
     oaeEntry.orestarOriginalId = orestarEntry['Original Id'];
     oaeEntry.orestarTransactionId = orestarEntry['Tran Id'];
-
     oaeEntry.type = ContributionType.CONTRIBUTION;
     oaeEntry.subType = getContributionSubType(orestarEntry['Sub Type']);
     oaeEntry.contributorType = orestarEntry['Book Type'] ? getContributorType(orestarEntry['Book Type']) : undefined;
-
     oaeEntry.date = new Date(orestarEntry['Tran Date']);
     oaeEntry.amount = orestarEntry.Amount;
     // amount: orestarEntry['Aggregate Amount'] // ? do we need to track this?;
-
     oaeEntry.name = orestarEntry['Contributor/Payee']; // ? should we parse this into lastname firstname?
     oaeEntry.occupation = orestarEntry['Occptn Txt'];
     oaeEntry.employerName = orestarEntry['Emp Name'];
     oaeEntry.employerCity = orestarEntry['Emp City'];
     oaeEntry.employerState = orestarEntry['Emp State'];
     // employerCountry:  // ? always USA? should we use orestarEntry.Country?
-
     oaeEntry.notes = orestarEntry['Purp Desc'];
-
     oaeEntry.address1 = orestarEntry['Addr Line1'];
     oaeEntry.address2 = orestarEntry['Addr Line2'];
     oaeEntry.city = orestarEntry.City;
