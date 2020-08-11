@@ -2,17 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  BeforeInsert,
-  BeforeUpdate,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  getConnection,
-  Between,
-  In,
-  LessThanOrEqual,
-  MoreThanOrEqual,
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 // import { Government } from './Government';
@@ -332,10 +323,11 @@ export class ExternalContribution {
   async validateAsync(): Promise<ValidationError[]> {
     const errors = await validate(this);
     this.errors = errors;
+    this.validateType();
+    this.validateName();
+    this.validateContributorAddress();
     // await this.validateCampaignAsync();
     // await this.validateGovernmentAsync();
-    // this.validateType();
-    // this.validateName();
     // this.validateMatchAmount();
     // this.validateInKindType();
     // this.validatePaymentType();
@@ -412,14 +404,14 @@ export class ExternalContribution {
     return true;
   }
 
-  isInKind() {
-    return [
-      ContributionSubType.INKIND_CONTRIBUTION,
-      ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-      ContributionSubType.INKIND_FORGIVEN_PERSONAL,
-      ContributionSubType.INKIND_PAID_SUPERVISION,
-    ].includes(this.subType);
-  }
+  // isInKind() {
+  //   return [
+  //     ContributionSubType.INKIND_CONTRIBUTION,
+  //     ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+  //     ContributionSubType.INKIND_FORGIVEN_PERSONAL,
+  //     ContributionSubType.INKIND_PAID_SUPERVISION,
+  //   ].includes(this.subType);
+  // }
 
 //   toJSON(isGov: boolean = false) {
 //       const json: any = {};
@@ -545,33 +537,33 @@ export type IContributionSummary = Pick<ExternalContribution, typeof contributio
 
 // export type IContributionGovSummary = Pick<Contribution, typeof contributionGovSummaryFields[number]>;
 
-export interface IContributionGeoJson {
-  type: 'Feature';
-  properties: {
-      city: string;
-      state: string;
-      zip: string;
-      amount: number;
-      contributorType: ContributorType;
-      contributionType: ContributionType;
-      contributionSubType: ContributionSubType;
-      date: string;
-      campaign: {
-          name: string;
-          id: string;
-      };
-      contributorName: string;
-  };
-  geometry: {
-      type: 'Point';
-      coordinates: [number, number];
-  };
-}
+// export interface IContributionGeoJson {
+//   type: 'Feature';
+//   properties: {
+//       city: string;
+//       state: string;
+//       zip: string;
+//       amount: number;
+//       contributorType: ContributorType;
+//       contributionType: ContributionType;
+//       contributionSubType: ContributionSubType;
+//       date: string;
+//       campaign: {
+//           name: string;
+//           id: string;
+//       };
+//       contributorName: string;
+//   };
+//   geometry: {
+//       type: 'Point';
+//       coordinates: [number, number];
+//   };
+// }
 
-export interface IContributionsGeoJson {
-  type: 'FeatureCollection';
-  features: IContributionGeoJson[];
-}
+// export interface IContributionsGeoJson {
+//   type: 'FeatureCollection';
+//   features: IContributionGeoJson[];
+// }
 
 // export type IContributionSummaryResults = {
 //   data: IContributionSummary[] | IContributionGovSummary[];
@@ -753,17 +745,17 @@ export interface IContributionsGeoJson {
 //   return convertContributionsToXML(contributions, filerId);
 // }
 
-export interface SummaryAttrs {
-  campaignId?: number;
-  governmentId?: number;
-}
+// export interface SummaryAttrs {
+//   campaignId?: number;
+//   governmentId?: number;
+// }
 
-export interface ContributionSummaryByStatus {
-  status: ContributionStatus;
-  total: number;
-  amount: number;
-  matchAmount: number;
-}
+// export interface ContributionSummaryByStatus {
+//   status: ContributionStatus;
+//   total: number;
+//   amount: number;
+//   matchAmount: number;
+// }
 
 // export async function getContributionsSummaryByStatusAsync(
 //   attrs: SummaryAttrs

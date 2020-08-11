@@ -11,8 +11,6 @@ custom:
     automatic: true
     number: 3
 
-
-
 plugins:
   - serverless-offline
   - serverless-webpack

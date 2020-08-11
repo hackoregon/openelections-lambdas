@@ -1,11 +1,29 @@
 import XLSX from 'xlsx';
 import {
-  IContributionSummary, ContributionType, ContributionStatus, ContributionSubType, ContributorType, ExternalContribution,
+  ContributionType,
+  ContributionSubType,
+  ContributorType
 } from '@models/entity/ExternalContribution';
 
+// We are not using the following from Orestar in the OAE database:
+// 'Tran Status'
+// 'Filer'
+// 'Aggregate Amount': number;
+// 'Filer Id'
+// 'Attest By Name'
+// 'Attest Date'
+// 'Due Date'
+// 'Tran Stsfd Ind'
+// 'Filed By Name'
+// 'Filed Date'
+// 'Self Employ Ind'
+// 'Review By Name'
+// 'Review Date'
+// 'Contributor/Payee Committee ID'
+
 type OrestarEntry = {
-  'Tran Id': string; // 7 digit number
-  'Original Id': string; // 7 digit number, same as Tran Id, unless entry was updated.
+  'Tran Id': string; // 7 digit number, same as Original Id, unless entry was updated.
+  'Original Id': string; // 7 digit number
   'Tran Date': string; // MM/DD/YYYY
   'Tran Status': 'Original' | 'Amended' | 'Deleted';
   'Filer': string;
@@ -117,13 +135,11 @@ export function readXls(xlsFilename: string): OrestarContribution[] {
       contributorType: orestarEntry['Book Type'] ? getContributorType(orestarEntry['Book Type']) : undefined,
       date: new Date(orestarEntry['Tran Date']),
       amount: orestarEntry.Amount,
-      // amount: orestarEntry['Aggregate Amount'] // ? do we need to track this?,
-      name: orestarEntry['Contributor/Payee'], // ? should we parse this into lastname firstname?
+      name: orestarEntry['Contributor/Payee'],
       occupation: orestarEntry['Occptn Txt'],
       employerName: orestarEntry['Emp Name'],
       employerCity: orestarEntry['Emp City'],
       employerState: orestarEntry['Emp State'],
-      // employerCountry:  // ? always USA? should we use orestarEntry.Country?
       notes: orestarEntry['Purp Desc'],
       address1: orestarEntry['Addr Line1'],
       address2: orestarEntry['Addr Line2'],
@@ -132,22 +148,6 @@ export function readXls(xlsFilename: string): OrestarContribution[] {
       zip: orestarEntry.Zip,
       country: orestarEntry.Country,
     };
-    // Unused Fields:
-    // 'Tran Status'
-    // 'Filer'
-    // 'Aggregate Amount': number;
-    // 'Filer Id'
-    // 'Attest By Name'
-    // 'Attest Date'
-    // 'Due Date'
-    // 'Tran Stsfd Ind'
-    // 'Filed By Name'
-    // 'Filed Date'
-    // 'Self Employ Ind'
-    // 'Review By Name'
-    // 'Review Date'
-    // 'Contributor/Payee Committee ID'
-
     return oaeEntry;
   });
 
