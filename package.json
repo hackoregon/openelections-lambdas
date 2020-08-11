@@ -8,7 +8,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lintfix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "buildtest": "tsc --noEmit",
-    "offline": "SLS_DEBUG=* sls offline --noTimeout"
+    "offline": "SLS_DEBUG=* sls offline --noTimeout",
+    "deploy": "NODE_ENV=production sls deploy"
   },
   "dependencies": {
     "@bugsnag/js": "^7.2.1",
