@@ -215,12 +215,13 @@ export class ExternalContribution {
     })
     const connection = await getConnection('default');
     const repo = connection.getRepository('external_contributions');
+    console.log(this.orestarOriginalId)
     await repo.update(this.orestarOriginalId, {
       addressPoint: {
         type: 'Point',
         coordinates: geoCode
     }
-    }).then(() => console.log('inserted', geoCode))
+    }).then((res) => console.log('inserted', res))
   }
 
 

@@ -123,7 +123,10 @@ export async function geocodeContributions(contributions: OrestarContribution[])
           zip,
         }).then((addressPoint) => {
           // eslint-disable-next-line no-param-reassign
-          contribution.addressPoint = addressPoint;
+          contribution.addressPoint = {
+            type: 'Point',
+            coordinates: addressPoint
+        };
           console.log('data!', contribution.addressPoint);
           resolve(contribution);
         });

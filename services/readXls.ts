@@ -77,7 +77,7 @@ export type OrestarContribution = {
   state: string;
   zip: string;
   country: string;
-  addressPoint?: number[];
+  addressPoint?: any;
 }
 
 function getContributionSubType(orestarSubType: string): ContributionSubType {

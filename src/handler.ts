@@ -4,6 +4,7 @@ import { readXls } from '@services/readXls';
 // import getOrestarFinanceData from '@services/getOrestarFinanceData';
 // import { geocodeContributions } from '@services/geocodeContributions';
 import { addContributions } from '@services/addContributions';
+import { geocodeContributions } from '@services/geocodeContributions';
 
 // TODO:
 //  1) Update geocode to run post-save https://typeorm.io/#/listeners-and-subscribers/afterupdate
@@ -16,15 +17,15 @@ export const orestarScraper: APIGatewayProxyHandler = async () => {
 
   const contributions = readXls(xlsFilename);
   console.log('got contributions');
-  // const geocodedContributions = await geocodeContributions(contributions.slice(0, 1));
+  // const geocodedContributions = await geocodeContributions(contributions.slice(0, 2));
 
   await addContributions(contributions.slice(0, 2));
   console.log('done!');
 
-  // return {
-  //   statusCode: 200,
-  //   body: JSON.stringify({
-  //     content: contributions.slice(0, 2),
-  //   }, null, 2),
-  // };
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      content: contributions.slice(0, 2),
+    }, null, 2),
+  };
 };
