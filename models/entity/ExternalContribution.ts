@@ -6,8 +6,10 @@ import {
   AfterUpdate,
   AfterInsert,
   PrimaryColumn,
+  getConnection,
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
+import { geocodeAddressAsync } from '@services/geocodeContributions';
 
 export enum ContributionType {
   CONTRIBUTION = 'contribution',
@@ -205,7 +207,20 @@ export class ExternalContribution {
 
   @AfterInsert()
   async inserted() {
-    console.log('inserted')
+    const geoCode = await geocodeAddressAsync({
+      address1: this.address1,
+      city: this.city,
+      state: this.state,
+      zip: this.zip
+    })
+    const connection = await getConnection('default');
+    const repo = connection.getRepository('external_contributions');
+    await repo.update(this.orestarOriginalId, {
+      addressPoint: {
+        type: 'Point',
+        coordinates: geoCode
+    }
+    }).then(() => console.log('inserted', geoCode))
   }
 
 

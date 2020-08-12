@@ -21,10 +21,10 @@ export const orestarScraper: APIGatewayProxyHandler = async () => {
   await addContributions(contributions.slice(0, 2));
   console.log('done!');
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      content: contributions.slice(0, 2),
-    }, null, 2),
-  };
+  // return {
+  //   statusCode: 200,
+  //   body: JSON.stringify({
+  //     content: contributions.slice(0, 2),
+  //   }, null, 2),
+  // };
 };

@@ -6,19 +6,6 @@ export async function addContributions(contributions: OrestarContribution[]): Pr
   try {
     console.log('attempting to save');
     const connection = await db();
-
-    // const oaeContributions = contributions.map((contributionData) => {
-    //   const contribution = new ExternalContribution();
-    //   Object.assign(contribution, contributionData);
-    //   return contribution;
-    // });
-
-    // await connection.transaction(async (manager) => {
-    //   console.log('connected to db');
-    //   // TODO: handle updates...
-    //   manager.save(oaeContributions);
-    // });
-
     const contributionRepository = connection.getRepository('external_contributions');
 
     console.log('have repository');
@@ -29,13 +16,12 @@ export async function addContributions(contributions: OrestarContribution[]): Pr
 
       if (await oaeContribution.isValidAsync()) {
         // TODO: handle update
-        contributionRepository.save(oaeContribution);
+        await contributionRepository.save(oaeContribution);
       }
     }));
   } catch (error) {
     // TODO: handle error
-    console.log('error saving data!', error.name, error.message);
-    console.log(error.stack);
+    console.log('error saving data!', error);
     throw error;
   }
 }

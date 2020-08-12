@@ -68,7 +68,7 @@ export interface GoogleResult {
   status: string;
 }
 
-async function geocodeAddressAsync(attrs: {
+export async function geocodeAddressAsync(attrs: {
   address1: string;
   city: string;
   state: string;
