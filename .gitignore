@@ -18,3 +18,5 @@ temp
 
 # environment variables
 .env
+.env.development
+.env.production

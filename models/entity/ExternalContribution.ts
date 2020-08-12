@@ -2,17 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  BeforeInsert,
-  BeforeUpdate,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  getConnection,
-  Between,
-  In,
-  LessThanOrEqual,
-  MoreThanOrEqual,
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
 // import { Government } from './Government';
@@ -110,9 +101,10 @@ export enum PaymentMethod {
   ETF = 'electronic_funds_transfer',
   DEBIT = 'debit'
 }
+
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
-@Entity({ name: 'external contributions' })
-export class Contribution {
+@Entity('external_contributions')
+export class ExternalContribution {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -323,23 +315,24 @@ export class Contribution {
   //       }
   //   }
 
-  //   async isValidAsync(): Promise<boolean> {
-  //       await this.validateAsync();
-  //       return this.errors.length === 0;
-  //   }
+  async isValidAsync(): Promise<boolean> {
+    await this.validateAsync();
+    return this.errors.length === 0;
+  }
 
-  //   async validateAsync(): Promise<ValidationError[]> {
-  //       const errors = await validate(this);
-  //       this.errors = errors;
-  //       await this.validateCampaignAsync();
-  //       await this.validateGovernmentAsync();
-  //       this.validateType();
-  //       this.validateName();
-  //       this.validateMatchAmount();
-  //       this.validateInKindType();
-  //       this.validatePaymentType();
-  //       return this.errors;
-  //   }
+  async validateAsync(): Promise<ValidationError[]> {
+    const errors = await validate(this);
+    this.errors = errors;
+    this.validateType();
+    this.validateName();
+    this.validateContributorAddress();
+    // await this.validateCampaignAsync();
+    // await this.validateGovernmentAsync();
+    // this.validateMatchAmount();
+    // this.validateInKindType();
+    // this.validatePaymentType();
+    return this.errors;
+  }
 
   //   async validateGovernmentAsync() {
   //       const g = await this.government;
@@ -411,14 +404,14 @@ export class Contribution {
     return true;
   }
 
-  isInKind() {
-    return [
-      ContributionSubType.INKIND_CONTRIBUTION,
-      ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-      ContributionSubType.INKIND_FORGIVEN_PERSONAL,
-      ContributionSubType.INKIND_PAID_SUPERVISION,
-    ].includes(this.subType);
-  }
+  // isInKind() {
+  //   return [
+  //     ContributionSubType.INKIND_CONTRIBUTION,
+  //     ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+  //     ContributionSubType.INKIND_FORGIVEN_PERSONAL,
+  //     ContributionSubType.INKIND_PAID_SUPERVISION,
+  //   ].includes(this.subType);
+  // }
 
 //   toJSON(isGov: boolean = false) {
 //       const json: any = {};
@@ -493,7 +486,7 @@ export const contributionSummaryFields = <const>[
   // 'occupationLetterDate',
   'addressPoint',
 ];
-export type IContributionSummary = Pick<Contribution, typeof contributionSummaryFields[number]>;
+export type IContributionSummary = Pick<ExternalContribution, typeof contributionSummaryFields[number]>;
 
 // export const contributionGovSummaryFields = <const>[
 //   'id',
@@ -544,33 +537,33 @@ export type IContributionSummary = Pick<Contribution, typeof contributionSummary
 
 // export type IContributionGovSummary = Pick<Contribution, typeof contributionGovSummaryFields[number]>;
 
-export interface IContributionGeoJson {
-  type: 'Feature';
-  properties: {
-      city: string;
-      state: string;
-      zip: string;
-      amount: number;
-      contributorType: ContributorType;
-      contributionType: ContributionType;
-      contributionSubType: ContributionSubType;
-      date: string;
-      campaign: {
-          name: string;
-          id: string;
-      };
-      contributorName: string;
-  };
-  geometry: {
-      type: 'Point';
-      coordinates: [number, number];
-  };
-}
+// export interface IContributionGeoJson {
+//   type: 'Feature';
+//   properties: {
+//       city: string;
+//       state: string;
+//       zip: string;
+//       amount: number;
+//       contributorType: ContributorType;
+//       contributionType: ContributionType;
+//       contributionSubType: ContributionSubType;
+//       date: string;
+//       campaign: {
+//           name: string;
+//           id: string;
+//       };
+//       contributorName: string;
+//   };
+//   geometry: {
+//       type: 'Point';
+//       coordinates: [number, number];
+//   };
+// }
 
-export interface IContributionsGeoJson {
-  type: 'FeatureCollection';
-  features: IContributionGeoJson[];
-}
+// export interface IContributionsGeoJson {
+//   type: 'FeatureCollection';
+//   features: IContributionGeoJson[];
+// }
 
 // export type IContributionSummaryResults = {
 //   data: IContributionSummary[] | IContributionGovSummary[];
@@ -752,17 +745,17 @@ export interface IContributionsGeoJson {
 //   return convertContributionsToXML(contributions, filerId);
 // }
 
-export interface SummaryAttrs {
-  campaignId?: number;
-  governmentId?: number;
-}
+// export interface SummaryAttrs {
+//   campaignId?: number;
+//   governmentId?: number;
+// }
 
-export interface ContributionSummaryByStatus {
-  status: ContributionStatus;
-  total: number;
-  amount: number;
-  matchAmount: number;
-}
+// export interface ContributionSummaryByStatus {
+//   status: ContributionStatus;
+//   total: number;
+//   amount: number;
+//   matchAmount: number;
+// }
 
 // export async function getContributionsSummaryByStatusAsync(
 //   attrs: SummaryAttrs

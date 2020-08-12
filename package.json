@@ -8,7 +8,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lintfix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "buildtest": "tsc --noEmit",
-    "offline": "SLS_DEBUG=* sls offline --noTimeout"
+    "offline": "SLS_DEBUG=* sls offline --noTimeout",
+    "deploy": "NODE_ENV=production sls deploy"
   },
   "dependencies": {
     "@bugsnag/js": "^7.2.1",
@@ -21,6 +22,7 @@
     "aws-sdk": "^2.627.0",
     "class-validator": "^0.12.2",
     "node-fetch": "^2.6.0",
+    "pg": "^8.3.0",
     "puppeteer": "^5.2.1",
     "source-map-support": "^0.5.10",
     "typeorm": "^0.2.25",

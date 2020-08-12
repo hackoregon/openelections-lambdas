@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 import * as fetch from 'node-fetch';
-import { Contribution } from '@models/entity/Contribution';
+import { ExternalContribution } from '@models/entity/ExternalContribution';
+import { OrestarContribution } from './readXls';
 
 export interface GoogleResult {
   results: [
@@ -98,12 +99,12 @@ const MAX_QUERIES_PER_SEC = 25;
  * Batches the geocoding of multiple contributions.
  * NOTE: modifies original objects.
  */
-export async function geocodeContributions(contributions: Contribution[]): Promise<Contribution[]> {
+export async function geocodeContributions(contributions: OrestarContribution[]): Promise<OrestarContribution[]> {
   if (contributions.length === 0) return [];
   console.log('geocoding!', contributions.length);
 
   // create batches of MAX_QUERIES_PER_SEC Promises that fetch geocode data
-  const batches: Promise<Contribution>[][] = [];
+  const batches: Promise<OrestarContribution>[][] = [];
   while (contributions.length !== 0) {
     batches.push(
       contributions.splice(0, MAX_QUERIES_PER_SEC).map((contribution) => new Promise((resolve) => {
@@ -130,8 +131,8 @@ export async function geocodeContributions(contributions: Contribution[]): Promi
     );
   }
 
-  const batchResults: Contribution[][] = await Promise.all(
-    batches.map((batch, i): Promise<Contribution[]> => new Promise((resolve) => {
+  const batchResults: OrestarContribution[][] = await Promise.all(
+    batches.map((batch, i): Promise<OrestarContribution[]> => new Promise((resolve) => {
       setTimeout(async () => {
         console.log('sending batch ', i);
         const geocoded = await Promise.all(batch);
