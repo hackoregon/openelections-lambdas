@@ -86,9 +86,6 @@ function getContributionSubType(orestarSubType: string): ContributionSubType {
     'In-Kind Contribution': ContributionSubType.INKIND_CONTRIBUTION,
     'In-Kind/Forgiven Personal Expenditures': ContributionSubType.INKIND_FORGIVEN_PERSONAL,
     'In-Kind/Forgiven Account Payable': ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-    // 'Loan Received (Non-Exempt)': ContributionSubType.INKIND_CONTRIBUTION,
-    // 'Pledge of Loan': ContributionSubType.INKIND_CONTRIBUTION,
-    // 'Pledge of In-Kind': ContributionSubType.INKIND_CONTRIBUTION
   };
   const oaeSubType = subTypeMap[orestarSubType];
   if (!oaeSubType) {

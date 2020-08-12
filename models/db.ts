@@ -1,8 +1,12 @@
-import { createConnection, Connection, getConnection } from 'typeorm';
+import { createConnection, Connection, getConnection, getConnectionManager } from 'typeorm';
 import ORMConfig from './ormConfig';
 
 export default async (): Promise<Connection> => {
   try {
+    const connectionManager = getConnectionManager()
+    if (connectionManager.has('default')) {
+      return await connectionManager.get('default');
+    } 
     const connection: Connection = await createConnection(ORMConfig);
     // This is safe to do in prod and dev because it tracks what migrations have ran already in the db.
     if (process.env.NODE_ENV === 'production') {

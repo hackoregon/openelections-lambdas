@@ -19,7 +19,7 @@ export async function addContributions(contributions: OrestarContribution[]): Pr
     //   manager.save(oaeContributions);
     // });
 
-    const contributionRepository = connection.getRepository(ExternalContribution);
+    const contributionRepository = connection.getRepository('external_contributions');
 
     console.log('have repository');
     await Promise.all(contributions.map(async (contribution: OrestarContribution) => {
