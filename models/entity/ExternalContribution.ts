@@ -200,31 +200,6 @@ export class ExternalContribution {
 
   public errors: ValidationError[] = [];
 
-  @AfterUpdate()
-  updateStatus() {
-    console.log('UPDATED')
-  }
-
-  @AfterInsert()
-  async inserted() {
-    const geoCode = await geocodeAddressAsync({
-      address1: this.address1,
-      city: this.city,
-      state: this.state,
-      zip: this.zip
-    })
-    const connection = await getConnection('default');
-    const repo = connection.getRepository('external_contributions');
-    console.log(this.orestarOriginalId)
-    await repo.update(this.orestarOriginalId, {
-      addressPoint: {
-        type: 'Point',
-        coordinates: geoCode
-    }
-    }).then((res) => console.log('inserted', res))
-  }
-
-
   async isValidAsync(): Promise<boolean> {
     await this.validateAsync();
     return this.errors.length === 0;
