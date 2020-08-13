@@ -25,7 +25,8 @@ export enum ContributionSubType {
   ITEM_SOLD_FAIR_MARKET = 'item_sold_fair_market',
   ITEM_RETURNED_CHECK = 'item_returned_check',
   ITEM_MISC = 'item_misc',
-  ITEM_REFUND = 'item_refund'
+  ITEM_REFUND = 'item_refund',
+  OTHER = 'other',
 }
 
 export enum ContributorType {

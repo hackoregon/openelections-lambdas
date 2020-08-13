@@ -20,7 +20,7 @@ import {
 // 'Review By Name'
 // 'Review Date'
 // 'Contributor/Payee Committee ID'
-
+// Also refer to the Orestar User Manual for more info: https://sos.oregon.gov/elections/Documents/orestarTransFiling.pdf
 type OrestarEntry = {
   'Tran Id': string; // 7 digit number, same as Original Id, unless entry was updated.
   'Original Id': string; // 7 digit number
@@ -28,7 +28,7 @@ type OrestarEntry = {
   'Tran Status': 'Original' | 'Amended' | 'Deleted';
   'Filer': string;
   'Contributor/Payee': string;
-  'Sub Type': string;
+  'Sub Type': string; 
   'Amount': number;
   'Aggregate Amount': number;
   'Filer Id': string;
@@ -86,6 +86,10 @@ function getContributionSubType(orestarSubType: string): ContributionSubType {
     'In-Kind Contribution': ContributionSubType.INKIND_CONTRIBUTION,
     'In-Kind/Forgiven Personal Expenditures': ContributionSubType.INKIND_FORGIVEN_PERSONAL,
     'In-Kind/Forgiven Account Payable': ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
+    // The following subtypes from Orestar are not tracked in OAE
+    'Loan Received (Non-Exempt)': ContributionSubType.OTHER,
+    'Pledge of Loan': ContributionSubType.OTHER,	
+    'Pledge of In-Kind': ContributionSubType.OTHER,
   };
   const oaeSubType = subTypeMap[orestarSubType];
   if (!oaeSubType) {
