@@ -3,13 +3,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  AfterUpdate,
-  AfterInsert,
   PrimaryColumn,
-  getConnection,
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
-import { geocodeAddressAsync } from '@services/geocodeContributions';
 
 export enum ContributionType {
   CONTRIBUTION = 'contribution',
