@@ -8,24 +8,34 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
 
   if (await oaeContribution.isValidAsync()) {
     await contributionRepo.findOneOrFail(oaeContribution.orestarOriginalId).then(async (entry: ExternalContribution) => {
-      if (entry.addressPoint) {
-        return;
-      }
-      console.log('starting geocode process');
-      // TODO: check for no geocode response
-      const geoCode = await geocodeAddressAsync({
-        address1: entry.address1,
-        city: entry.city,
-        state: entry.state,
-        zip: entry.zip,
-      });
-      if (geoCode) {
-        await contributionRepo.update(oaeContribution.orestarOriginalId, {
-          addressPoint: {
-            type: 'Point',
-            coordinates: geoCode,
-          },
+      let geoCode = entry.addressPoint;
+
+      // when orestar updates a record, they keep the original id but update the transaction id.
+      const orestarDataHasBeenUpdated = oaeContribution.orestarTransactionId !== entry.orestarTransactionId;
+
+      const doGeocode = oaeContribution.address1 !== entry.address1
+                     || oaeContribution.city !== entry.city
+                     || oaeContribution.state !== entry.state
+                     || oaeContribution.zip !== entry.zip
+                     || (geoCode == null);
+      if (doGeocode) {
+        const coordinates = await geocodeAddressAsync({
+          address1: entry.address1,
+          city: entry.city,
+          state: entry.state,
+          zip: entry.zip,
         });
+        geoCode = {
+          type: 'Point',
+          coordinates,
+        };
+      }
+
+      if (doGeocode || orestarDataHasBeenUpdated) {
+        Object.assign(oaeContribution, {
+          addressPoint: geoCode,
+        });
+        await contributionRepo.save(oaeContribution);
       }
     }).catch(async () => {
       // find failed, this is an insert! row does not exist so we geocode.
