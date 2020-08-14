@@ -3,7 +3,10 @@ import {
   ContributionType,
   ContributionSubType,
   ContributorType,
+  IContributionSummary,
 } from '@models/entity/ExternalContribution';
+import db from '@models/db';
+import addContribution from '@services/addContribution';
 
 // We are not using the following from Orestar in the OAE database:
 // 'Tran Status'
@@ -57,29 +60,6 @@ type OrestarEntry = {
   'Purp Desc'?: string;
 }
 
-export type OrestarContribution = {
-  orestarOriginalId: string;
-  orestarTransactionId: string;
-  type: ContributionType;
-  subType: ContributionSubType;
-  contributorType: ContributorType;
-  date: Date;
-  amount: number;
-  name: string;
-  occupation: string;
-  employerName: string;
-  employerCity: string;
-  employerState: string;
-  notes: string;
-  address1: string;
-  address2: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-  addressPoint?: any;
-}
-
 function getContributionSubType(orestarSubType: string): ContributionSubType {
   const subTypeMap = {
     'Cash Contribution': ContributionSubType.CASH,
@@ -118,7 +98,10 @@ function getContributorType(orestarBookType: string): ContributorType {
   return oaeContributorType;
 }
 
-export function readXls(xlsFilename: string): OrestarContribution[] {
+export async function parseAndSaveContributionData(xlsFilename: string): Promise<void> {
+  const connection = await db();
+  const contributionRepo = connection.getRepository('external_contributions');
+
   const workbook = XLSX.readFile(xlsFilename, {
     bookVBA: true,
     WTF: true,
@@ -127,8 +110,9 @@ export function readXls(xlsFilename: string): OrestarContribution[] {
   const sheetName = workbook.SheetNames[0];
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-  const contributionData = orestarData.map((orestarEntry: OrestarEntry) => {
-    const oaeEntry: OrestarContribution = {
+  // TODO: remove slice
+  Promise.all(orestarData.slice(0, 2).map(async (orestarEntry: OrestarEntry) => {
+    const oaeEntry: IContributionSummary = {
       orestarOriginalId: orestarEntry['Original Id'],
       orestarTransactionId: orestarEntry['Tran Id'],
       type: ContributionType.CONTRIBUTION,
@@ -149,8 +133,10 @@ export function readXls(xlsFilename: string): OrestarContribution[] {
       zip: orestarEntry.Zip,
       country: orestarEntry.Country,
     };
-    return oaeEntry;
-  });
 
-  return contributionData;
+    // TODO: catch me.
+    await addContribution(oaeEntry, contributionRepo);
+
+    return oaeEntry;
+  }));
 }

@@ -1,6 +1,6 @@
 import Bugsnag from '@bugsnag/js';
 
-export function reportError(error: any): void {
+export function reportError(error: Error): void {
   console.log(error);
   if (process.env.NODE_ENV !== 'test') {
     Bugsnag.start({

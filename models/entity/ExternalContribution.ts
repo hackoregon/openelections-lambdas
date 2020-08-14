@@ -165,8 +165,8 @@ export class ExternalContribution {
   @Column({
     type: 'decimal',
     transformer: {
-      to: (value: number) => value,
-      from: (value: string) => parseFloat(value),
+      to: (value: number): number => value,
+      from: (value: string): number => parseFloat(value),
     },
   })
   amount: number;
@@ -193,7 +193,10 @@ export class ExternalContribution {
     spatialFeatureType: 'Point',
     srid: 4326,
   })
-  addressPoint?: any; // geoJson coordinates for address
+  addressPoint?: {
+    type: 'Point';
+    coordinates: [number, number];
+  }; // geoJson coordinates for address
 
   public errors: ValidationError[] = [];
 
@@ -211,7 +214,7 @@ export class ExternalContribution {
     return this.errors;
   }
 
-  validateType() {
+  validateType(): void {
     if (this.type === ContributionType.CONTRIBUTION) {
       if (
         ![
@@ -245,7 +248,7 @@ export class ExternalContribution {
     }
   }
 
-  validateName() {
+  validateName(): void {
     if (!this.name || this.name.trim() === '') {
       const error = new ValidationError();
       error.property = 'name';
@@ -254,9 +257,9 @@ export class ExternalContribution {
     }
   }
 
-  validateContributorAddress() {
+  validateContributorAddress(): boolean {
     if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
-      return this.address1 && this.city && this.zip && this.state;
+      return !!(this.address1 && this.city && this.zip && this.state);
     }
     return true;
   }
@@ -267,8 +270,6 @@ export const contributionSummaryFields = <const>[
   'orestarTransactionId',
   'country',
   'amount',
-  'createdAt',
-  'updatedAt',
   'type',
   'subType',
   'contributorType',
