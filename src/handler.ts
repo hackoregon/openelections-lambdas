@@ -1,30 +1,16 @@
 import 'source-map-support/register';
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { readXls } from '@services/readXls';
-// import getOrestarFinanceData from '@services/getOrestarFinanceData';
-// import { geocodeContributions } from '@services/geocodeContributions';
-import { addContributions } from '@services/addContributions';
-
-// TODO:
-//  1) Update geocode to run post-save https://typeorm.io/#/listeners-and-subscribers/afterupdate
-//  2) reorganize code to check to see if entry exists, if not update / run geocode listener. Make sure no duplicates happen.
+import { parseAndSaveContributionData } from '@services/parseAndSaveContributionData';
+import getOrestarFinanceData from '@services/getOrestarFinanceData';
 
 export const orestarScraper: APIGatewayProxyHandler = async () => {
-  console.log('HOST!', process.env.DB_HOST, process.env.NODE_ENV);
-  // const xlsFilename = await getOrestarFinanceData({ candidateName: 'Ted Wheeler' });
-  const xlsFilename = './temp/XcelCNESearch.xls';
-
-  const contributions = readXls(xlsFilename);
-  console.log('got contributions');
-  // const geocodedContributions = await geocodeContributions(contributions.slice(0, 1));
-
-  await addContributions(contributions.slice(0, 2));
-  console.log('done!');
+  const xlsFilename = await getOrestarFinanceData({ candidateName: 'Ted Wheeler' });
+  await parseAndSaveContributionData(xlsFilename);
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      content: contributions.slice(0, 2),
+      content: 'done!',
     }, null, 2),
   };
 };

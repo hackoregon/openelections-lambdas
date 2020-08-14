@@ -1,7 +1,5 @@
 /* eslint-disable consistent-return */
 import * as fetch from 'node-fetch';
-import { ExternalContribution } from '@models/entity/ExternalContribution';
-import { OrestarContribution } from './readXls';
 
 export interface GoogleResult {
   results: [
@@ -68,7 +66,7 @@ export interface GoogleResult {
   status: string;
 }
 
-async function geocodeAddressAsync(attrs: {
+export async function geocodeAddressAsync(attrs: {
   address1: string;
   city: string;
   state: string;
@@ -90,62 +88,4 @@ async function geocodeAddressAsync(attrs: {
   } else {
     throw new Error('Error geocoding');
   }
-}
-
-// Google's API for geocoding has a 50 QPS limit. Using half that just to be safe.
-const MAX_QUERIES_PER_SEC = 25;
-
-/**
- * Batches the geocoding of multiple contributions.
- * NOTE: modifies original objects.
- */
-export async function geocodeContributions(contributions: OrestarContribution[]): Promise<OrestarContribution[]> {
-  if (contributions.length === 0) return [];
-  console.log('geocoding!', contributions.length);
-
-  // create batches of MAX_QUERIES_PER_SEC Promises that fetch geocode data
-  const batches: Promise<OrestarContribution>[][] = [];
-  while (contributions.length !== 0) {
-    batches.push(
-      contributions.splice(0, MAX_QUERIES_PER_SEC).map((contribution) => new Promise((resolve) => {
-        console.log('doing it!');
-        const {
-          address1,
-          city,
-          state,
-          zip,
-        } = contribution;
-
-        return geocodeAddressAsync({
-          address1,
-          city,
-          state,
-          zip,
-        }).then((addressPoint) => {
-          // eslint-disable-next-line no-param-reassign
-          contribution.addressPoint = addressPoint;
-          console.log('data!', contribution.addressPoint);
-          resolve(contribution);
-        });
-      })),
-    );
-  }
-
-  const batchResults: OrestarContribution[][] = await Promise.all(
-    batches.map((batch, i): Promise<OrestarContribution[]> => new Promise((resolve) => {
-      setTimeout(async () => {
-        console.log('sending batch ', i);
-        const geocoded = await Promise.all(batch);
-        resolve(geocoded);
-      }, 1000 * i);
-    })),
-  );
-
-  const geocodedContributions = batchResults.flat();
-
-  console.log(geocodedContributions);
-
-  console.log('done geocoding!!');
-
-  return geocodedContributions;
 }

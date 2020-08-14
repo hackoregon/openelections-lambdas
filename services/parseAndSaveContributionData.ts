@@ -2,8 +2,11 @@ import XLSX from 'xlsx';
 import {
   ContributionType,
   ContributionSubType,
-  ContributorType
+  ContributorType,
+  IContributionSummary,
 } from '@models/entity/ExternalContribution';
+import db from '@models/db';
+import addContribution from '@services/addContribution';
 
 // We are not using the following from Orestar in the OAE database:
 // 'Tran Status'
@@ -20,7 +23,7 @@ import {
 // 'Review By Name'
 // 'Review Date'
 // 'Contributor/Payee Committee ID'
-
+// Also refer to the Orestar User Manual for more info: https://sos.oregon.gov/elections/Documents/orestarTransFiling.pdf
 type OrestarEntry = {
   'Tran Id': string; // 7 digit number, same as Original Id, unless entry was updated.
   'Original Id': string; // 7 digit number
@@ -57,38 +60,16 @@ type OrestarEntry = {
   'Purp Desc'?: string;
 }
 
-export type OrestarContribution = {
-  orestarOriginalId: string;
-  orestarTransactionId: string;
-  type: ContributionType;
-  subType: ContributionSubType;
-  contributorType: ContributorType;
-  date: Date;
-  amount: number;
-  name: string;
-  occupation: string;
-  employerName: string;
-  employerCity: string;
-  employerState: string;
-  notes: string;
-  address1: string;
-  address2: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-  addressPoint?: number[];
-}
-
 function getContributionSubType(orestarSubType: string): ContributionSubType {
   const subTypeMap = {
     'Cash Contribution': ContributionSubType.CASH,
     'In-Kind Contribution': ContributionSubType.INKIND_CONTRIBUTION,
     'In-Kind/Forgiven Personal Expenditures': ContributionSubType.INKIND_FORGIVEN_PERSONAL,
     'In-Kind/Forgiven Account Payable': ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-    // 'Loan Received (Non-Exempt)': ContributionSubType.INKIND_CONTRIBUTION,
-    // 'Pledge of Loan': ContributionSubType.INKIND_CONTRIBUTION,
-    // 'Pledge of In-Kind': ContributionSubType.INKIND_CONTRIBUTION
+    // The following subtypes from Orestar are not tracked in OAE
+    'Loan Received (Non-Exempt)': ContributionSubType.OTHER,
+    'Pledge of Loan': ContributionSubType.OTHER,
+    'Pledge of In-Kind': ContributionSubType.OTHER,
   };
   const oaeSubType = subTypeMap[orestarSubType];
   if (!oaeSubType) {
@@ -117,7 +98,10 @@ function getContributorType(orestarBookType: string): ContributorType {
   return oaeContributorType;
 }
 
-export function readXls(xlsFilename: string): OrestarContribution[] {
+export async function parseAndSaveContributionData(xlsFilename: string): Promise<void> {
+  const connection = await db();
+  const contributionRepo = connection.getRepository('external_contributions');
+
   const workbook = XLSX.readFile(xlsFilename, {
     bookVBA: true,
     WTF: true,
@@ -126,8 +110,9 @@ export function readXls(xlsFilename: string): OrestarContribution[] {
   const sheetName = workbook.SheetNames[0];
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-  const contributionData = orestarData.map((orestarEntry: OrestarEntry) => {
-    const oaeEntry: OrestarContribution = {
+  // TODO: remove slice
+  Promise.all(orestarData.slice(0, 2).map(async (orestarEntry: OrestarEntry) => {
+    const oaeEntry: IContributionSummary = {
       orestarOriginalId: orestarEntry['Original Id'],
       orestarTransactionId: orestarEntry['Tran Id'],
       type: ContributionType.CONTRIBUTION,
@@ -148,8 +133,10 @@ export function readXls(xlsFilename: string): OrestarContribution[] {
       zip: orestarEntry.Zip,
       country: orestarEntry.Country,
     };
-    return oaeEntry;
-  });
 
-  return contributionData;
+    // TODO: catch me.
+    await addContribution(oaeEntry, contributionRepo);
+
+    return oaeEntry;
+  }));
 }

@@ -1,21 +1,11 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import { IsDefined, validate, ValidationError } from 'class-validator';
-// import { Government } from './Government';
-// import { Campaign } from './Campaign';
-// import { Activity } from './Activity';
-// import { IGetContributionGeoJsonOptions, IGetContributionOptions } from '../../services/contributionService';
-// import { removeUndefined } from './helpers';
-// import { MatchAddressType } from '../../services/dataScienceService';
-// import { Parser } from 'json2csv';
-// import * as dateFormat from 'dateformat';
-// import OrestarContributionConverter from '../../models/converters/orestarContributionConverter';
-// import { convertContributionsToXML } from '../converters';
 
 export enum ContributionType {
   CONTRIBUTION = 'contribution',
@@ -31,7 +21,8 @@ export enum ContributionSubType {
   ITEM_SOLD_FAIR_MARKET = 'item_sold_fair_market',
   ITEM_RETURNED_CHECK = 'item_returned_check',
   ITEM_MISC = 'item_misc',
-  ITEM_REFUND = 'item_refund'
+  ITEM_REFUND = 'item_refund',
+  OTHER = 'other',
 }
 
 export enum ContributorType {
@@ -105,11 +96,8 @@ export enum PaymentMethod {
 // Note, if you change any column type on the model, it will do a drop column operation, which means data loss in production.
 @Entity('external_contributions')
 export class ExternalContribution {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   // New: from Orestar
-  @Column()
+  @PrimaryColumn()
   orestarOriginalId: string;
 
   // New: from Orestar
@@ -139,44 +127,12 @@ export class ExternalContribution {
   @IsDefined()
   subType: ContributionSubType;
 
-  //   @Column({
-  //       type: 'enum',
-  //       enum: OaeType,
-  //       nullable: true
-  //   })
-  //   oaeType: OaeType;
-
-  //   @Column({
-  //       type: 'enum',
-  //       enum: PaymentMethod,
-  //       nullable: true
-  //   })
-  //   paymentMethod: PaymentMethod;
-
   @Column({
     type: 'enum',
     enum: ContributorType,
   })
   @IsDefined()
   contributorType: ContributorType;
-
-  // @Column({ nullable: true })
-  // contrPrefix?: string;
-
-  //   @Column({ nullable: true })
-  //   firstName?: string;
-
-  //   @Column({ nullable: true })
-  //   middleInitial?: string;
-
-  //   @Column({ nullable: true })
-  //   lastName?: string;
-
-  //   @Column({ nullable: true })
-  //   suffix?: string;
-
-  //   @Column({ nullable: true })
-  //   title?: string;
 
   @Column({ nullable: true })
   name?: string;
@@ -203,39 +159,17 @@ export class ExternalContribution {
   @Column()
   country: string;
 
-  // @Column({ nullable: true })
-  // county?: string;
-
-  // @Column({ nullable: true })
-  // email?: string;
-
-  // @Column({ nullable: true })
-  // phone?: string;
-
   @Column({ nullable: true })
   notes?: string;
-
-  // @Column({
-  //   type: 'enum',
-  //   enum: PhoneType,
-  //   nullable: true,
-  // })
-  // phoneType?: PhoneType;
-
-  // @Column({ nullable: true })
-  // checkNumber?: string;
 
   @Column({
     type: 'decimal',
     transformer: {
-      to: (value: number) => value,
-      from: (value: string) => parseFloat(value),
+      to: (value: number): number => value,
+      from: (value: string): number => parseFloat(value),
     },
   })
   amount: number;
-
-  // @Column({ nullable: true })
-  // inKindDescription?: string;
 
   @Column({ nullable: true })
   occupation?: string;
@@ -249,52 +183,9 @@ export class ExternalContribution {
   @Column({ nullable: true })
   employerState?: string;
 
-  // @Column({ nullable: true })
-  // employerCountry?: string;
-
-  // @Column({ nullable: true })
-  // compliant?: boolean;
-
-  // @Column({
-  //   nullable: true,
-  // })
-  // matchAmount?: number;
-
-  // @Column({ nullable: true, type: 'enum', enum: InKindDescriptionType })
-  // inKindType?: InKindDescriptionType;
-
-  // @Column({
-  //   type: 'enum',
-  //   enum: ContributionStatus,
-  //   default: ContributionStatus.DRAFT,
-  // })
-  // @IsDefined()
-  // status: ContributionStatus;
-
   @Column()
   @IsDefined()
   date: Date;
-
-  // @Column({ nullable: true })
-  // occupationLetterDate?: Date;
-
-  // @ManyToOne(type => Government, government => government.contributions)
-  // government: Government;
-
-  // @ManyToOne(type => Campaign, campaign => campaign.contributions)
-  // campaign: Campaign;
-
-  // @OneToMany(type => Activity, activity => activity.contribution)
-  // activities: Activity[];
-
-  //   @Column({ type: 'json', nullable: true })
-  //   matchResult?: MatchAddressType;
-
-  // @Column({ nullable: true })
-  // matchId?: string;
-
-  // @Column({ type: 'enum', enum: MatchStrength, nullable: true })
-  // matchStrength?: MatchStrength;
 
   @Column({
     type: 'geometry',
@@ -302,18 +193,12 @@ export class ExternalContribution {
     spatialFeatureType: 'Point',
     srid: 4326,
   })
-  addressPoint?: any; // geoJson coordinates for address
+  addressPoint?: {
+    type: 'Point';
+    coordinates: [number, number];
+  }; // geoJson coordinates for address
 
   public errors: ValidationError[] = [];
-
-  //   @BeforeInsert()
-  //   @BeforeUpdate()
-  //   async validate() {
-  //       await this.validateAsync();
-  //       if (this.errors.length > 0) {
-  //           throw new Error('contribution has one or more validation problems');
-  //       }
-  //   }
 
   async isValidAsync(): Promise<boolean> {
     await this.validateAsync();
@@ -326,35 +211,10 @@ export class ExternalContribution {
     this.validateType();
     this.validateName();
     this.validateContributorAddress();
-    // await this.validateCampaignAsync();
-    // await this.validateGovernmentAsync();
-    // this.validateMatchAmount();
-    // this.validateInKindType();
-    // this.validatePaymentType();
     return this.errors;
   }
 
-  //   async validateGovernmentAsync() {
-  //       const g = await this.government;
-  //       if (!g) {
-  //           const error = new ValidationError();
-  //           error.property = 'governmentId';
-  //           error.constraints = { isDefined: 'governmentId should not be null or undefined' };
-  //           this.errors.push(error);
-  //       }
-  //   }
-
-  //   async validateCampaignAsync() {
-  //       const c = await this.campaign;
-  //       if (!c) {
-  //           const error = new ValidationError();
-  //           error.property = 'campaignId';
-  //           error.constraints = { isDefined: 'campaignId should not be null or undefined' };
-  //           this.errors.push(error);
-  //       }
-  //   }
-
-  validateType() {
+  validateType(): void {
     if (this.type === ContributionType.CONTRIBUTION) {
       if (
         ![
@@ -388,7 +248,7 @@ export class ExternalContribution {
     }
   }
 
-  validateName() {
+  validateName(): void {
     if (!this.name || this.name.trim() === '') {
       const error = new ValidationError();
       error.property = 'name';
@@ -397,401 +257,34 @@ export class ExternalContribution {
     }
   }
 
-  validateContributorAddress() {
+  validateContributorAddress(): boolean {
     if (this.contributorType === ContributorType.INDIVIDUAL || this.contributorType === ContributorType.FAMILY) {
-      return this.address1 && this.city && this.zip && this.state;
+      return !!(this.address1 && this.city && this.zip && this.state);
     }
     return true;
   }
-
-  // isInKind() {
-  //   return [
-  //     ContributionSubType.INKIND_CONTRIBUTION,
-  //     ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
-  //     ContributionSubType.INKIND_FORGIVEN_PERSONAL,
-  //     ContributionSubType.INKIND_PAID_SUPERVISION,
-  //   ].includes(this.subType);
-  // }
-
-//   toJSON(isGov: boolean = false) {
-//       const json: any = {};
-//       if (isGov) {
-//           contributionGovSummaryFields.forEach(
-//               (key: string): void => {
-//                   json[key] = this[key];
-//               }
-//           );
-//           json.campaign = {
-//               name: this.campaign.name,
-//               id: this.campaign.id
-//           };
-//           return json as IContributionGovSummary;
-//       }
-//       contributionSummaryFields.forEach(
-//           (key: string): void => {
-//               json[key] = this[key];
-//           }
-//       );
-//       json.campaign = {
-//           name: this.campaign.name,
-//           id: this.campaign.id
-//       };
-//       return json as IContributionSummary;
-//   }
 }
 
 export const contributionSummaryFields = <const>[
   'orestarOriginalId',
   'orestarTransactionId',
   'country',
-
-  'id',
   'amount',
-  'createdAt',
-  'updatedAt',
   'type',
   'subType',
-  // 'inKindType',
   'contributorType',
-  //   'oaeType',
-  // 'contrPrefix',
-  // 'firstName',
-  // 'middleInitial',
-  // 'lastName',
-  // 'suffix',
-  // 'title',
   'name',
   'address1',
   'address2',
   'city',
   'state',
   'zip',
-  // 'county',
-  // 'email',
-  // 'phone',
-  // 'phoneType',
-  // 'checkNumber',
-  // 'inKindType',
   'occupation',
   'employerName',
   'employerCity',
   'employerState',
-  // 'employerCountry',
-  // 'compliant',
-  // 'matchAmount',
-  // 'status',
   'notes',
-  // 'paymentMethod',
   'date',
-  // 'occupationLetterDate',
   'addressPoint',
 ];
 export type IContributionSummary = Pick<ExternalContribution, typeof contributionSummaryFields[number]>;
-
-// export const contributionGovSummaryFields = <const>[
-//   'id',
-//   'amount',
-//   'createdAt',
-//   'updatedAt',
-//   'type',
-//   'subType',
-//   'inKindType',
-//   'contributorType',
-//   'oaeType',
-//   'contrPrefix',
-//   'firstName',
-//   'middleInitial',
-//   'lastName',
-//   'suffix',
-//   'title',
-//   'name',
-//   'address1',
-//   'address2',
-//   'city',
-//   'state',
-//   'zip',
-//   'county',
-//   'email',
-//   'phone',
-//   'phoneType',
-//   'checkNumber',
-//   'inKindType',
-//   'occupation',
-//   'employerName',
-//   'employerCity',
-//   'employerState',
-//   'employerCountry',
-//   'compliant',
-//   'status',
-//   'notes',
-//   'paymentMethod',
-//   'date',
-//   'occupationLetterDate',
-//   'addressPoint',
-//   'compliant',
-//   'matchId',
-//   'matchAmount',
-//   'matchStrength',
-//   'matchResult',
-// ];
-
-// export type IContributionGovSummary = Pick<Contribution, typeof contributionGovSummaryFields[number]>;
-
-// export interface IContributionGeoJson {
-//   type: 'Feature';
-//   properties: {
-//       city: string;
-//       state: string;
-//       zip: string;
-//       amount: number;
-//       contributorType: ContributorType;
-//       contributionType: ContributionType;
-//       contributionSubType: ContributionSubType;
-//       date: string;
-//       campaign: {
-//           name: string;
-//           id: string;
-//       };
-//       contributorName: string;
-//   };
-//   geometry: {
-//       type: 'Point';
-//       coordinates: [number, number];
-//   };
-// }
-
-// export interface IContributionsGeoJson {
-//   type: 'FeatureCollection';
-//   features: IContributionGeoJson[];
-// }
-
-// export type IContributionSummaryResults = {
-//   data: IContributionSummary[] | IContributionGovSummary[];
-//   geoJson?: IContributionsGeoJson;
-//   csv?: string;
-//   xml?: string;
-//   perPage: number;
-//   page: number;
-//   total: number;
-// };
-
-// export async function getContributionsByGovernmentIdAsync(
-//   governmentId: number,
-//   options?: IGetContributionOptions
-// ): Promise<IContributionSummaryResults> {
-//   try {
-//       const contributionRepository = getConnection('default').getRepository('Contribution');
-//       const { page, perPage, campaignId, status, from, to, matchId, sort, format } = options;
-//       const isGovQuery = !options.campaignId;
-//       const where = {
-//               government: {
-//                   id: governmentId
-//               },
-//               campaign: campaignId
-//                   ? {
-//                       id: campaignId
-//                   }
-//                   : undefined,
-//               matchId,
-//               status,
-//               date:
-//                   from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
-//           };
-//       const query: any = {
-//           select: isGovQuery ? contributionGovSummaryFields : contributionSummaryFields,
-//           relations: ['campaign', 'government'],
-//           where,
-//           skip: format === 'csv' ? undefined : page,
-//           take:  format === 'csv' ? undefined : perPage,
-//           order: {
-//               updatedAt: 'DESC'
-//           },
-//           join: {
-//               alias: 'contribution',
-//               leftJoinAndSelect: {
-//                   government: 'contribution.government',
-//                   campaign: 'contribution.campaign'
-//               }
-//           }
-//       };
-//       if (sort) {
-//           if (!['date', 'status', 'campaignId', 'matchAmount', 'amount'].includes(sort.field)) {
-//               throw new Error('Sort.field must be one of date, status, matchAmount, amount or campaignid');
-//           }
-
-//           if (!['ASC', 'DESC'].includes(sort.direction)) {
-//               throw new Error('Sort.direction must be one of ASC or DESC');
-//           }
-
-//           query.order = { [sort.field]: sort.direction };
-//       }
-
-//       const contributions = (await contributionRepository.find(removeUndefined(query)) as any).map((item: any): any => {
-//           const json = item.toJSON(isGovQuery);
-//           json.campaign = {
-//               id: item.campaign.id,
-//               name: item.campaign.name};
-//           json.government = {
-//               id: item.government.id,
-//               name: item.government.name};
-//           if (json.coordinates) {
-//               json.coordinates = item.addressPoint.coordinates;
-//           }
-//           return json;
-//       });
-
-//       const total = await contributionRepository.count(removeUndefined({ where }));
-
-//       return {
-//           data: contributions,
-//           perPage,
-//           page,
-//           total
-//       };
-//   } catch (err) {
-//       console.log(err);
-//       throw new Error('Error executing get contributions query');
-//   }
-// }
-
-// export async function getContributionsGeoJsonAsync(
-//   options?: IGetContributionGeoJsonOptions
-// ): Promise<IContributionsGeoJson> {
-//   try {
-//       const contributionRepository = getConnection('default').getRepository('Contribution');
-//       let from;
-//       let to;
-//       if (options) {
-//           from = options.from;
-//           to = options.to;
-//       }
-
-//       const where = {
-//           status: In([ContributionStatus.PROCESSED, ContributionStatus.SUBMITTED]),
-//           date:
-//               from && to ? Between(from, to) : from ? MoreThanOrEqual(from) : to ? LessThanOrEqual(to) : undefined
-//       };
-//       const query: any = {
-//           select: ['date', 'type', 'matchAmount', 'oaeType', 'amount', 'city', 'state', 'zip', 'oaeType', 'name', 'firstName', 'lastName', 'addressPoint', 'contributorType', 'subType'],
-//           relations: ['campaign', 'government'],
-//           where,
-//           order: {
-//               date: 'DESC'
-//           },
-//           join: {
-//               alias: 'contribution',
-//               leftJoinAndSelect: {
-//                   government: 'contribution.government',
-//                   campaign: 'contribution.campaign'
-//               }
-//           }
-//       };
-
-//       const contributions = (await contributionRepository.find(removeUndefined(query)) as any).map((contribution: Contribution): any => {
-//           const json = {
-//               type: 'Feature',
-//                   properties: {
-//                   type: contribution.type,
-//                   city: contribution.city,
-//                   state: contribution.state,
-//                   zip: contribution.zip,
-//                   amount: contribution.amount,
-//                   contributorType: contribution.contributorType,
-//                   contributionType: contribution.type,
-//                   contributionSubType: contribution.subType,
-//                   date: contribution.date.toISOString(),
-//                   matchAmount: contribution.matchAmount,
-//                   oaeType: contribution.oaeType,
-//                   contributorName: contribution.name || contribution.firstName + ' ' + contribution.lastName,
-//                   campaignId: contribution.campaign.id,
-//                   campaignName: contribution.campaign.name,
-//                   officeSought: contribution.campaign.officeSought,
-//               },
-//               geometry: {
-//                   type: 'Point',
-//                       // @ts-ignore
-//                       coordinates: contribution.addressPoint ? contribution.addressPoint.coordinates : undefined
-//               }
-//           };
-
-//           return json;
-//       });
-
-//       return {
-//           type: 'FeatureCollection',
-//           features: contributions,
-//       };
-
-//   } catch (err) {
-//       console.log(err);
-//       throw new Error('Error executing get contributions geojson query');
-//   }
-// }
-
-// export function convertToCsv(contributions: any): string {
-//   const json2csvParser = new Parser();
-//   contributions.data.map( (item: any ): any => {
-//       item.campaignId = item.campaign.id;
-//       item.campaignName = item.campaign.name;
-//       item.date = dateFormat(item.date, 'yyyy/mm/dd');
-//       delete item.campaign;
-//       delete item.government;
-//       return item;
-//   });
-//   return json2csvParser.parse(contributions.data);
-// }
-
-// export function convertToXml(contributions: any, filerId: number | string): string {
-//   return convertContributionsToXML(contributions, filerId);
-// }
-
-// export interface SummaryAttrs {
-//   campaignId?: number;
-//   governmentId?: number;
-// }
-
-// export interface ContributionSummaryByStatus {
-//   status: ContributionStatus;
-//   total: number;
-//   amount: number;
-//   matchAmount: number;
-// }
-
-// export async function getContributionsSummaryByStatusAsync(
-//   attrs: SummaryAttrs
-// ): Promise<ContributionSummaryByStatus[]> {
-//   try {
-//       const contributionQuery = getConnection('default')
-//           .getRepository('Contribution')
-//           .createQueryBuilder('contributions')
-//           .select('SUM(contributions.amount)', 'amount')
-//           .addSelect('coalesce(SUM(contributions.matchAmount), 0)', 'matchAmount')
-//           .addSelect('COUNT(contributions.*)', 'total')
-//           .addSelect('contributions.status', 'status')
-//           .where('contributions.status != :status', { status: ContributionStatus.ARCHIVED })
-//           .groupBy('contributions.status');
-//       if (attrs.campaignId) {
-//           contributionQuery.andWhere('contributions."campaignId" = :campaignId', { campaignId: attrs.campaignId });
-//       } else if (attrs.governmentId) {
-//           contributionQuery.andWhere('contributions."governmentId" = :governmentId', {
-//               governmentId: attrs.governmentId
-//           });
-//       }
-
-//       const results: any = await contributionQuery.getRawMany();
-//       const summary: ContributionSummaryByStatus[] = [];
-//       results.forEach(
-//           (item: any): void => {
-//               summary.push({
-//                   status: item.status,
-//                   total: parseInt(item.total),
-//                   amount: parseInt(item.amount),
-//                   matchAmount: parseInt(item.matchAmount)
-//               });
-//           }
-//       );
-//       return summary;
-//   } catch (err) {
-//       throw new Error('Error executing get contributions summary status query');
-//   }
-// }
