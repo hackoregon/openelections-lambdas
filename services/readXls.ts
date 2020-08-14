@@ -2,7 +2,7 @@ import XLSX from 'xlsx';
 import {
   ContributionType,
   ContributionSubType,
-  ContributorType
+  ContributorType,
 } from '@models/entity/ExternalContribution';
 
 // We are not using the following from Orestar in the OAE database:
@@ -28,7 +28,7 @@ type OrestarEntry = {
   'Tran Status': 'Original' | 'Amended' | 'Deleted';
   'Filer': string;
   'Contributor/Payee': string;
-  'Sub Type': string; 
+  'Sub Type': string;
   'Amount': number;
   'Aggregate Amount': number;
   'Filer Id': string;
@@ -88,7 +88,7 @@ function getContributionSubType(orestarSubType: string): ContributionSubType {
     'In-Kind/Forgiven Account Payable': ContributionSubType.INKIND_FORGIVEN_ACCOUNT,
     // The following subtypes from Orestar are not tracked in OAE
     'Loan Received (Non-Exempt)': ContributionSubType.OTHER,
-    'Pledge of Loan': ContributionSubType.OTHER,	
+    'Pledge of Loan': ContributionSubType.OTHER,
     'Pledge of In-Kind': ContributionSubType.OTHER,
   };
   const oaeSubType = subTypeMap[orestarSubType];

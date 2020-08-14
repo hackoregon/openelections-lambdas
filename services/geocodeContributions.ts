@@ -124,8 +124,8 @@ export async function geocodeContributions(contributions: OrestarContribution[])
           // eslint-disable-next-line no-param-reassign
           contribution.addressPoint = {
             type: 'Point',
-            coordinates: addressPoint
-        };
+            coordinates: addressPoint,
+          };
           console.log('data!', contribution.addressPoint);
           resolve(contribution);
         });
