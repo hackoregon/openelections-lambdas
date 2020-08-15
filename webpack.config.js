@@ -47,12 +47,13 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new ForkTsCheckerWebpackPlugin({
-      eslint: true,
-      eslintOptions: {
-        cache: true,
-      },
-    }),
-  ],
+  // this plugin causes prod build to fail. Wait for this fix: https://github.com/TypeStrong/fork-ts-checker-webpack-plugin/issues/406
+  // plugins: [
+  //   new ForkTsCheckerWebpackPlugin({
+  //     eslint: true,
+  //     eslintOptions: {
+  //       cache: true,
+  //     },
+  //   }),
+  // ],
 };
