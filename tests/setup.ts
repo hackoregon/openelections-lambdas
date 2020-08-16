@@ -1,3 +1,4 @@
+
 const env = {
   AWS_REGION: 'local',
   AWS_ACCESS_KEY: 'fake_key',

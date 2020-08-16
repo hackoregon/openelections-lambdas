@@ -17,6 +17,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-prune-plugin
   - serverless-dotenv-plugin
+  - serverless-offline-scheduler
 
 provider:
   name: aws
@@ -35,11 +36,16 @@ provider:
   #       - xray:PutTraceSegments
   #       - xray:PutTelemetryRecords
   #     Resource: "*"
-# This needs to be upgraded to a cron eventually
+
 functions:
   orestarScraper:
     handler: src/handler.orestarScraper
     events:
-      - http: 
-          method: get
-          path: orestarScraper
+      - schedule:
+          name: orestarScraper
+          description: 'Pull Ted Wheeler campaign contribution data every 12 hours'
+          rate: rate(1 minute)
+          # rate: rate(12 hours)
+      # - http: 
+      #     method: get
+      #     path: orestarScraper
