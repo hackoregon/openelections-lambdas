@@ -1,6 +1,7 @@
 import { ExternalContribution, IContributionSummary } from '../models/entity/ExternalContribution';
 import { Repository } from 'typeorm';
 import { geocodeAddressAsync } from './geocodeContributions';
+import { reportError } from './bugSnag';
 
 export default async (contribution: IContributionSummary, contributionRepo: Repository<unknown>): Promise<void> => {
   const oaeContribution = new ExternalContribution();
@@ -18,39 +19,51 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
                      || oaeContribution.state !== entry.state
                      || oaeContribution.zip !== entry.zip
                      || (geoCode == null);
+      let failedGeocoding = false;
       if (doGeocode) {
-        const coordinates = await geocodeAddressAsync({
-          address1: entry.address1,
-          city: entry.city,
-          state: entry.state,
-          zip: entry.zip,
-        });
-        geoCode = {
-          type: 'Point',
-          coordinates,
-        };
+        try {
+          const coordinates = await geocodeAddressAsync({
+            address1: entry.address1,
+            city: entry.city,
+            state: entry.state,
+            zip: entry.zip,
+          });
+          geoCode = {
+            type: 'Point',
+            coordinates,
+          };
+          if (doGeocode || orestarDataHasBeenUpdated) {
+            Object.assign(oaeContribution, {
+              addressPoint: geoCode,
+            });
+            await contributionRepo.save(oaeContribution);
+          }
+        } catch (error) {
+          failedGeocoding = true;
+          reportError(error);
+        }
       }
-
-      if (doGeocode || orestarDataHasBeenUpdated) {
-        Object.assign(oaeContribution, {
-          addressPoint: geoCode,
-        });
+      if (failedGeocoding) {
         await contributionRepo.save(oaeContribution);
       }
     }).catch(async () => {
       // find failed, this is an insert! row does not exist so we geocode.
-      const geoCode = await geocodeAddressAsync({
-        address1: oaeContribution.address1,
-        city: oaeContribution.city,
-        state: oaeContribution.state,
-        zip: oaeContribution.zip,
-      });
-      Object.assign(oaeContribution, {
-        addressPoint: {
-          type: 'Point',
-          coordinates: geoCode,
-        },
-      });
+      try {
+        const geoCode = await geocodeAddressAsync({
+          address1: oaeContribution.address1,
+          city: oaeContribution.city,
+          state: oaeContribution.state,
+          zip: oaeContribution.zip,
+        });
+        Object.assign(oaeContribution, {
+          addressPoint: {
+            type: 'Point',
+            coordinates: geoCode,
+          },
+        });
+      } catch (error) {
+        reportError(error);
+      }
       await contributionRepo.save(oaeContribution);
     });
   }

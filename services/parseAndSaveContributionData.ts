@@ -108,9 +108,9 @@ export async function parseAndSaveContributionData(xlsFilename: string): Promise
   });
   const sheetName = workbook.SheetNames[0];
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+  console.log(`total contributions: ${orestarData.length}.`);
 
-  // TODO: remove slice
-  Promise.all(orestarData.slice(0, 2).map(async (orestarEntry: OrestarEntry) => {
+  Promise.all(orestarData.map(async (orestarEntry: OrestarEntry) => {
     const oaeEntry: IContributionSummary = {
       orestarOriginalId: orestarEntry['Original Id'],
       orestarTransactionId: orestarEntry['Tran Id'],
