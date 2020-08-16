@@ -1,4 +1,4 @@
-import { ExternalContribution, IContributionSummary } from '@models/entity/ExternalContribution';
+import { ExternalContribution, IContributionSummary } from '../models/entity/ExternalContribution';
 import { Repository } from 'typeorm';
 import { geocodeAddressAsync } from './geocodeContributions';
 
