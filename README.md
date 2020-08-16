@@ -7,12 +7,16 @@ This is a template for the Serverless Framework with typescript, eslint and jest
 
 This repository has common tools and configuration for working The Serverless Framework and Typescript with AWS.
 
-Largely based of the repo [here](https://medium.com/@Michael_Timbs/getting-started-with-aws-serverless-typescript-8c172ccfec41).
+Largely based off [this repo](https://medium.com/@Michael_Timbs/getting-started-with-aws-serverless-typescript-8c172ccfec41).
 
 
 ### Serverless Plugins
-- serverless-iam-roles-per-function
 - serverless-offline
+- serverless-webpack
+- serverless-iam-roles-per-function
+- serverless-prune-plugin
+- serverless-dotenv-plugin
+- serverless-offline-scheduler
 
 #### Lambda PowerTools
 - @dazn/lambda-powertools-cloudwatchevents-client
@@ -32,8 +36,7 @@ Largely based of the repo [here](https://medium.com/@Michael_Timbs/getting-start
 - eslint-plugin-module-resolver
 
 #### Testing
-- jest
-- babel-jest
+- mocha
 - @babel/core
 - @babel/preset-env
 - @babel/preset-typescript
@@ -49,48 +52,5 @@ describe('who tests the tests?', () => {
 ```
 
 #### Module Aliasing
-Everything comes configured out the box to leverage module aliasing. 3 example aliases have been preconfigured.
-
 Aliases must be defined in webpack, tsconfig, and eslint
 
-webpack:
-```
-resolve: {
-  extensions: ['.mjs', '.json', '.ts'],
-  symlinks: false,
-  cacheWithContext: false,
-  alias: {
-    '@src': path.resolve(__dirname, './src'),
-    '@services': path.resolve(__dirname, './services'),
-    '@tests': path.resolve(__dirname, './tests'),
-  },
-},
-```
-
-tsconfig:
-```
-"paths": {
-  "@src/*": ["src/*"],
-  "@services/*": ["services/*"],
-  "@tests/*": ["tests/*"]
-}
-```
-
-eslint:
-```
-"settings": {
-  "import/resolver": {
-    "alias": {
-      "map": [
-        ["@src", "./src"],
-        ["@tests", "./tests"],
-        ["@services", "./services"]
-      ],
-      "extensions": [
-        ".ts",
-        ".js"
-      ]
-    }
-  }
-}
-```

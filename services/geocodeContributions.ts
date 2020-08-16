@@ -79,7 +79,6 @@ export async function geocodeAddressAsync(attrs: {
 
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address1},+${attrs.city},+${attrs.state},+${attrs.zip}&key=${process.env.GOOGLE_GIS_KEY}`;
   const request = await fetch(url);
-  console.log('fetching:', url);
   if (request.ok) {
     const json = await request.json() as GoogleResult;
     if (json.status === 'OK' && json.results[0]) {
