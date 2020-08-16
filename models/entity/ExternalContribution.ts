@@ -98,10 +98,12 @@ export enum PaymentMethod {
 export class ExternalContribution {
   // New: from Orestar
   @PrimaryColumn()
+  @IsDefined()
   orestarOriginalId: string;
 
   // New: from Orestar
   @Column()
+  @IsDefined()
   orestarTransactionId: string;
 
   @Column()

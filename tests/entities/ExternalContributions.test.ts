@@ -30,58 +30,53 @@ describe('Contribution', () => {
     describe('validations', () => {
         it('isDefined Columns', async () => {
             const newRecord = new ExternalContribution();
-            console.log(newRecord)
-            expect(1).to.equal(1)
-            // newRecord.type = ContributionType.CONTRIBUTION;
-            // newRecord.subType = ContributionSubType.CASH;
-            // await newRecord.validateAsync();
-            // expect(newRecord.errors.length).toEqual(12);
-            // const isDefinedFields = newRecord.errors.map(item => item.property);
-            // expect(isDefinedFields).toEqual([
-            //     'type',
-            //     'subType',
-            //     'contributorType',
-            //     'address1',
-            //     'city',
-            //     'state',
-            //     'zip',
-            //     'status',
-            //     'date',
-            //     'campaignId',
-            //     'governmentId',
-            //     'name',
-            // ]);
+            await newRecord.validateAsync();
+            expect(newRecord.errors.length).to.equal(11);
+            const isDefinedFields = newRecord.errors.map(item => item.property);
+            expect(isDefinedFields).to.deep.equal([
+                'orestarOriginalId',
+                'orestarTransactionId',
+                'type',
+                'subType',
+                'contributorType',
+                'address1',
+                'city',
+                'state',
+                'zip',
+                'date',
+                'name',
+            ]);
         });
 
         // it('validateType CONTRIBUTION', async () => {
         //     const newRecord = new ExternalContribution();
         //     newRecord.type = ContributionType.CONTRIBUTION;
         //     newRecord.subType = ContributionSubType.CASH;
-        //     expect(newRecord.errors.length).toEqual(0);
+        //     expect(newRecord.errors.length).to.equal(0);
         //     await newRecord.validateType();
-        //     expect(newRecord.errors.length).toEqual(1);
-        //     expect(newRecord.errors[0].property).toEqual('subType');
-        //     expect(newRecord.errors[0].constraints.notAllowed).toEqual('Type "contribution" must have a valid subType of "cash or an inkind value"');
+        //     expect(newRecord.errors.length).to.equal(1);
+        //     expect(newRecord.errors[0].property).to.equal('subType');
+        //     expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "contribution" must have a valid subType of "cash or an inkind value"');
         // });
 
         // it('validatePaymentType CONTRIBUTION CASH', async () => {
         //     const newRecord = new ExternalContribution();
         //     newRecord.type = ContributionType.CONTRIBUTION;
         //     newRecord.subType = ContributionSubType.CASH;
-        //     expect(newRecord.errors.length).toEqual(0);
+        //     expect(newRecord.errors.length).to.equal(0);
         //     await newRecord.validatePaymentType();
-        //     expect(newRecord.errors.length).toEqual(1);
+        //     expect(newRecord.errors.length).to.equal(1);
         // });
 
         // it('validateType OTHER', async () => {
         //     const newRecord = new ExternalContribution();
         //     newRecord.type = ContributionType.OTHER;
         //     newRecord.subType = ContributionSubType.CASH;
-        //     expect(newRecord.errors.length).toEqual(0);
+        //     expect(newRecord.errors.length).to.equal(0);
         //     await newRecord.validateType();
-        //     expect(newRecord.errors.length).toEqual(1);
-        //     expect(newRecord.errors[0].property).toEqual('subType');
-        //     expect(newRecord.errors[0].constraints.notAllowed).toEqual('Type "other" cannot have a subType of "cash or inkind value"');
+        //     expect(newRecord.errors.length).to.equal(1);
+        //     expect(newRecord.errors[0].property).to.equal('subType');
+        //     expect(newRecord.errors[0].constraints.notAllowed).to.equal('Type "other" cannot have a subType of "cash or inkind value"');
         // });
 
         // it('validateName Individual', async () => {
@@ -89,11 +84,11 @@ describe('Contribution', () => {
         //     newRecord.type = ContributionType.CONTRIBUTION;
         //     newRecord.subType = ContributionSubType.CASH;
         //     newRecord.contributorType = ContributorType.INDIVIDUAL;
-        //     expect(newRecord.errors.length).toEqual(0);
+        //     expect(newRecord.errors.length).to.equal(0);
         //     await newRecord.validateName();
-        //     expect(newRecord.errors.length).toEqual(2);
-        //     expect(newRecord.errors[0].property).toEqual('lastName');
-        //     expect(newRecord.errors[1].property).toEqual('firstName');
+        //     expect(newRecord.errors.length).to.equal(2);
+        //     expect(newRecord.errors[0].property).to.equal('lastName');
+        //     expect(newRecord.errors[1].property).to.equal('firstName');
         // });
 
         // it('validateName Family', async () => {
@@ -101,11 +96,11 @@ describe('Contribution', () => {
         //     newRecord.type = ContributionType.CONTRIBUTION;
         //     newRecord.subType = ContributionSubType.CASH;
         //     newRecord.contributorType = ContributorType.FAMILY;
-        //     expect(newRecord.errors.length).toEqual(0);
+        //     expect(newRecord.errors.length).to.equal(0);
         //     await newRecord.validateName();
-        //     expect(newRecord.errors.length).toEqual(2);
-        //     expect(newRecord.errors[0].property).toEqual('lastName');
-        //     expect(newRecord.errors[1].property).toEqual('firstName');
+        //     expect(newRecord.errors.length).to.equal(2);
+        //     expect(newRecord.errors[0].property).to.equal('lastName');
+        //     expect(newRecord.errors[1].property).to.equal('firstName');
         // });
 
         // it('validateName not Individual', async () => {
@@ -113,10 +108,10 @@ describe('Contribution', () => {
         //     newRecord.type = ContributionType.CONTRIBUTION;
         //     newRecord.subType = ContributionSubType.CASH;
         //     newRecord.contributorType = ContributorType.BUSINESS;
-        //     expect(newRecord.errors.length).toEqual(0);
+        //     expect(newRecord.errors.length).to.equal(0);
         //     await newRecord.validateName();
-        //     expect(newRecord.errors.length).toEqual(1);
-        //     expect(newRecord.errors[0].property).toEqual('name');
+        //     expect(newRecord.errors.length).to.equal(1);
+        //     expect(newRecord.errors[0].property).to.equal('name');
         // });
 
         // it('validateMatchAmount', async () => {
@@ -125,10 +120,10 @@ describe('Contribution', () => {
         //     newRecord.subType = ContributionSubType.CASH;
         //     newRecord.contributorType = ContributorType.INDIVIDUAL;
         //     newRecord.amount = 1.00;
-        //     expect(newRecord.errors.length).toEqual(0);
+        //     expect(newRecord.errors.length).to.equal(0);
         //     await newRecord.validateMatchAmount();
-        //     expect(newRecord.errors.length).toEqual(1);
-        //     expect(newRecord.errors[0].property).toEqual('matchAmount');
+        //     expect(newRecord.errors.length).to.equal(1);
+        //     expect(newRecord.errors[0].property).to.equal('matchAmount');
         // });
 
         // it('isInKind && validateInKindType', async () => {
@@ -139,8 +134,8 @@ describe('Contribution', () => {
         //     expect(newRecord.isInKind()).to.be.true;
         //     expect(!newRecord.inKindType).to.be.true;
         //     await newRecord.validateInKindType();
-        //     expect(newRecord.errors.length).toEqual(1);
-        //     expect(newRecord.errors[0].property).toEqual('inKindType');
+        //     expect(newRecord.errors.length).to.equal(1);
+        //     expect(newRecord.errors[0].property).to.equal('inKindType');
         // });
     });
 });
