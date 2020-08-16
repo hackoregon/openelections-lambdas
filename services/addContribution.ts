@@ -49,23 +49,25 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
       }
     }).catch(async () => {
       // find failed, this is an insert! row does not exist so we geocode.
-      try {
-        const geoCode = await geocodeAddressAsync({
-          address1: oaeContribution.address1,
-          city: oaeContribution.city,
-          state: oaeContribution.state,
-          zip: oaeContribution.zip,
-        });
-        if (geoCode) {
-          Object.assign(oaeContribution, {
-            addressPoint: {
-              type: 'Point',
-              coordinates: geoCode,
-            },
+      if (!oaeContribution.addressPoint) {
+        try {
+          const geoCode = await geocodeAddressAsync({
+            address1: oaeContribution.address1,
+            city: oaeContribution.city,
+            state: oaeContribution.state,
+            zip: oaeContribution.zip,
           });
+          if (geoCode) {
+            Object.assign(oaeContribution, {
+              addressPoint: {
+                type: 'Point',
+                coordinates: geoCode,
+              },
+            });
+          }
+        } catch (error) {
+          reportError(error);
         }
-      } catch (error) {
-        reportError(error);
       }
       await contributionRepo.save(oaeContribution);
     });
