@@ -44,8 +44,7 @@ functions:
       - schedule:
           name: orestarScraper
           description: 'Pull Ted Wheeler campaign contribution data every 12 hours'
-          rate: rate(1 minute)
-          # rate: rate(12 hours)
+          rate: rate(12 hours)
       # - http: 
       #     method: get
       #     path: orestarScraper
