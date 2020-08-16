@@ -1,14 +1,15 @@
 import 'reflect-metadata';
+import { expect } from 'chai';
 import {
     ExternalContribution,
     // ContributionStatus,
-    ContributionSubType,
-    ContributionType,
+    // ContributionSubType,
+    // ContributionType,
     // ContributorType,
-} from '@models/entity/ExternalContribution';
+} from '../../models/entity/ExternalContribution';
 // import { newContributionAsync } from '../factories';
 
-jest.mock('typeorm')
+// jest.mock('typeorm')
 // let repository: any;
 
 describe('Contribution', () => {
@@ -30,7 +31,7 @@ describe('Contribution', () => {
         it('isDefined Columns', async () => {
             const newRecord = new ExternalContribution();
             console.log(newRecord)
-            expect(1).toBe(1)
+            expect(1).to.equal(1)
             // newRecord.type = ContributionType.CONTRIBUTION;
             // newRecord.subType = ContributionSubType.CASH;
             // await newRecord.validateAsync();

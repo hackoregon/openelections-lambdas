@@ -1,3 +1,4 @@
+
 const env = {
   AWS_REGION: 'local',
   AWS_ACCESS_KEY: 'fake_key',
@@ -8,3 +9,8 @@ process.env = {
   ...process.env,
   ...env,
 };
+
+
+before(async () => {
+  console.log('starting')
+});
