@@ -28,22 +28,23 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
             state: entry.state,
             zip: entry.zip,
           });
-          geoCode = {
-            type: 'Point',
-            coordinates,
-          };
-          if (doGeocode || orestarDataHasBeenUpdated) {
+          
+          if (coordinates) {
+            geoCode = {
+              type: 'Point',
+              coordinates,
+            };
             Object.assign(oaeContribution, {
               addressPoint: geoCode,
             });
-            await contributionRepo.save(oaeContribution);
           }
+          await contributionRepo.save(oaeContribution);
         } catch (error) {
           failedGeocoding = true;
           reportError(error);
         }
       }
-      if (failedGeocoding) {
+      if (failedGeocoding || orestarDataHasBeenUpdated) {
         await contributionRepo.save(oaeContribution);
       }
     }).catch(async () => {
@@ -55,12 +56,14 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
           state: oaeContribution.state,
           zip: oaeContribution.zip,
         });
-        Object.assign(oaeContribution, {
-          addressPoint: {
-            type: 'Point',
-            coordinates: geoCode,
-          },
-        });
+        if (geoCode) {
+          Object.assign(oaeContribution, {
+            addressPoint: {
+              type: 'Point',
+              coordinates: geoCode,
+            },
+          });
+        }
       } catch (error) {
         reportError(error);
       }
