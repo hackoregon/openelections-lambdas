@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import { existsSync as fileExists } from 'fs';
+import { existsSync as fileExists, unlink } from 'fs';
 
 interface OrestarFinanceQueryCriteria {
   candidateName: string;
@@ -71,14 +71,19 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<s
   const exportSelector = '#content > div > form > table:nth-child(6) > tbody > tr > td:nth-child(3) > a';
   await page.waitForSelector(exportSelector, { timeout: 0 });
 
-  // await page.screenshot({ path: 'pics/6.png' });
   console.log('found export link');
+
+  const xlsFilename = './temp/XcelCNESearch.xls';
+
+  unlink(xlsFilename, (err) => {
+    if (err) {
+      // file did not exist
+    }
+    console.log(`${xlsFilename} was deleted.`);
+  });
 
   await page.click(exportSelector);
   console.log('downloading XLS file.');
-
-  // TODO: be sure to remove the xls to ensure fs watching doesn't get an old file
-  const xlsFilename = './temp/XcelCNESearch.xls';
 
   // poll the filesystem for the downloaded file.
   const maxTimeout = 120000;
