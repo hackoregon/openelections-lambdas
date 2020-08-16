@@ -108,9 +108,9 @@ export async function parseAndSaveContributionData(xlsFilename: string): Promise
   });
   const sheetName = workbook.SheetNames[0];
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+  console.log(`total contributions: ${orestarData.length}.`);
 
-  // TODO: remove slice
-  Promise.all(orestarData.slice(0, 2).map(async (orestarEntry: OrestarEntry) => {
+  Promise.all(orestarData.map(async (orestarEntry: OrestarEntry) => {
     const oaeEntry: IContributionSummary = {
       orestarOriginalId: orestarEntry['Original Id'],
       orestarTransactionId: orestarEntry['Tran Id'],
@@ -132,6 +132,20 @@ export async function parseAndSaveContributionData(xlsFilename: string): Promise
       zip: orestarEntry.Zip,
       country: orestarEntry.Country,
     };
+
+    // Orestar will auto-aggregate contributions of ~$100 and set the Contributor/Payee to Miscellaneous Cash Contributions $100 and under, while excluding Review By Name, Review Date, etc. This sets the address for these contributions to the State of Oregon's Elections Division address in Salem for OAE visualization purposes. OAE participants must submit each contribution independently, so this only applies to Orestar data. See: https://sos.oregon.gov/elections/Documents/orestarTransFiling.pdf page 13.
+    if (orestarEntry['Contributor/Payee'].includes('Miscellaneous Cash Contributions $100 and under')) {
+      oaeEntry.contributorType = ContributorType.INDIVIDUAL;
+      oaeEntry.address1 = '255 Capitol St NE Suite 501';
+      oaeEntry.city = 'Salem';
+      oaeEntry.state = 'OR';
+      oaeEntry.zip = '97310';
+      oaeEntry.country = 'United States';
+      oaeEntry.addressPoint = {
+        type: 'Point',
+        coordinates: [-123.0287679, 44.9392561]
+      };
+    }
 
     try {
       await addContribution(oaeEntry, contributionRepo);      

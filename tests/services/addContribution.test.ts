@@ -119,4 +119,72 @@ describe('addContribution', () => {
       expect(geoStub.called).to.equal(false)
     })
   })
+  describe('findOneOrFail called, failed geoCode', () => {
+    beforeEach(() => {
+      geoStub = sinon.stub(geoService, 'geocodeAddressAsync').rejects('Error geocoding');
+      findOneOrFailSpy = sinon.stub()
+      saveSpy = sinon.stub()
+    })
+    afterEach(() => {
+      sinon.restore()
+      repository = null
+    })
+    it('findOneOrFail: geoCode throws error', async () => {
+      const contribution = newContributionAsync();
+      repository = {
+        findOneOrFail: async (args: any) => {
+          findOneOrFailSpy(args)
+          return contribution
+        },
+        save: async (args) => {
+          saveSpy(args)
+        }
+      }
+      await addContribution(contribution, (repository as Repository<unknown>))
+      expect(findOneOrFailSpy.called).to.equal(true)
+      expect(saveSpy.called).to.equal(true)
+      const findCall = findOneOrFailSpy.getCall(0)
+      const saveCall = saveSpy.getCall(0)
+      expect(findCall.args[0]).to.equal("1")
+      expect(geoStub.called).to.equal(true)
+      expect(saveCall.args[0]).to.deep.equal({
+        ...contribution,
+        "errors": [],
+      })
+    })
+  })
+  describe('findOneOrFail called, undefined geoCode', () => {
+    beforeEach(() => {
+      geoStub = sinon.stub(geoService, 'geocodeAddressAsync').resolves(undefined);
+      findOneOrFailSpy = sinon.stub()
+      saveSpy = sinon.stub()
+    })
+    afterEach(() => {
+      sinon.restore()
+      repository = null
+    })
+    it('findOneOrFail: geoCode throws error', async () => {
+      const contribution = newContributionAsync();
+      repository = {
+        findOneOrFail: async (args: any) => {
+          findOneOrFailSpy(args)
+          return contribution
+        },
+        save: async (args) => {
+          saveSpy(args)
+        }
+      }
+      await addContribution(contribution, (repository as Repository<unknown>))
+      expect(findOneOrFailSpy.called).to.equal(true)
+      expect(saveSpy.called).to.equal(true)
+      const findCall = findOneOrFailSpy.getCall(0)
+      const saveCall = saveSpy.getCall(0)
+      expect(findCall.args[0]).to.equal("1")
+      expect(geoStub.called).to.equal(true)
+      expect(saveCall.args[0]).to.deep.equal({
+        ...contribution,
+        "errors": [],
+      })
+    })
+  })
 })
