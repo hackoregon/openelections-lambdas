@@ -3,6 +3,7 @@ import {
   createConnection, Connection, getConnection, getConnectionManager,
 } from 'typeorm';
 import ORMConfig from './ormConfig';
+import { reportError } from '@services/bugSnag';
 
 export default async (): Promise<Connection> => {
   try {
@@ -13,8 +14,7 @@ export default async (): Promise<Connection> => {
     const connection: Connection = await createConnection(ORMConfig);
     return connection;
   } catch (error) {
-    console.log('error', error.message);
-    console.log('Using existing default db connection.');
+    reportError(error);
     return getConnection('default');
   }
 };

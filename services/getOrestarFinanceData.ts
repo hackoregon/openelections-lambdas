@@ -39,32 +39,21 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<s
   await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 0 });
   console.log('done waiting for landing');
 
-  // await page.screenshot({ path: 'pics/1.png' });
   // eslint-disable-next-line no-restricted-globals
   await page.evaluate(() => console.log(`url is ${location.href}`));
 
   await page.type(candidateInputSelector, candidateName, { delay: 100 });
   await page.type(startDateInputSelector, startDate, { delay: 100 });
   await page.select(transactionTypeSelectSelector, transactionType);
-  // await page.screenshot({ path: 'pics/2.png' });
 
   console.log('entered search query');
 
   await Promise.all([
     page.waitForNavigation({ timeout: 0 }),
     page.click('input[name=search]', { clickCount: 3 }),
-    // new Promise((resolve) => {
-    //   console.log('clicking search!');
-    //   setTimeout(async () => {
-    //     await page.screenshot({ path: 'pics/4.png' });
-    //     console.log('screenshot!');
-    //     resolve();
-    //   }, 5000);
-    // }),
   ]);
 
   console.log('doing search.');
-  // await page.screenshot({ path: 'pics/5.png' });
 
   console.log('loaded results!');
 

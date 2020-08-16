@@ -9,8 +9,3 @@ process.env = {
   ...process.env,
   ...env,
 };
-
-
-before(async () => {
-  console.log('starting')
-});

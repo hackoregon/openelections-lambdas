@@ -7,6 +7,7 @@ import {
 } from '@models/entity/ExternalContribution';
 import db from '@models/db';
 import addContribution from '@services/addContribution';
+import { reportError } from './bugSnag';
 
 // We are not using the following from Orestar in the OAE database:
 // 'Tran Status'
@@ -73,8 +74,7 @@ function getContributionSubType(orestarSubType: string): ContributionSubType {
   };
   const oaeSubType = subTypeMap[orestarSubType];
   if (!oaeSubType) {
-    // TODO: reportError, handle missing subtypes
-    console.log(`No subtype for ${orestarSubType}`);
+    reportError(new Error(`${orestarSubType} subtype is not being tracked!`));
   }
   return oaeSubType;
 }
@@ -92,8 +92,7 @@ function getContributorType(orestarBookType: string): ContributorType {
   };
   const oaeContributorType = contributorTypeMap[orestarBookType];
   if (!oaeContributorType) {
-    // TODO: reportError, do we want a default for when bookType is undefined?
-    console.log(`No contributorType for ${orestarBookType}`);
+    reportError(new Error(`${orestarBookType} contributorType is not being tracked!`));
   }
   return oaeContributorType;
 }
@@ -134,9 +133,10 @@ export async function parseAndSaveContributionData(xlsFilename: string): Promise
       country: orestarEntry.Country,
     };
 
-    // TODO: catch me.
-    await addContribution(oaeEntry, contributionRepo);
-
-    return oaeEntry;
+    try {
+      await addContribution(oaeEntry, contributionRepo);      
+    } catch (error) {
+      reportError(error);
+    }
   }));
 }

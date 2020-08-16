@@ -37,7 +37,6 @@ describe('addContribution', () => {
       expect(saveSpy.called).to.equal(true)
       const findCall = findOneOrFailSpy.getCall(0)
       const saveCall = saveSpy.getCall(0)
-      console.log(findOneOrFailSpy.getCall(0).args[0])
       expect(findCall.args[0]).to.equal("1") // orestarOriginalId
       expect(geoStub.called).to.equal(true)
       expect(saveCall.args[0]).to.deep.equal({
@@ -54,7 +53,6 @@ describe('addContribution', () => {
       expect(saveSpy.called).to.equal(true)
       const findCall = findOneOrFailSpy.getCall(0)
       const saveCall = saveSpy.getCall(0)
-      console.log(findOneOrFailSpy.getCall(0).args[0])
       expect(findCall.args[0]).to.equal("2") // orestarOriginalId
       expect(geoStub.called).to.equal(true)
       expect(saveCall.args[0]).to.deep.equal({
