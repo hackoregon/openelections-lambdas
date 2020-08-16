@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {
   createConnection, Connection, getConnection, getConnectionManager,
 } from 'typeorm';
