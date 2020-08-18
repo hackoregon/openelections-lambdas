@@ -9,6 +9,8 @@ This repository has common tools and configuration for working The Serverless Fr
 
 Largely based off [this repo](https://medium.com/@Michael_Timbs/getting-started-with-aws-serverless-typescript-8c172ccfec41).
 
+## Prerequisites
+- [nvm](https://github.com/nvm-sh/nvm), [yarn](https://github.com/yarnpkg/yarn), [serverless](https://github.com/serverless/serverless)
 
 ### Serverless Plugins
 - serverless-offline
