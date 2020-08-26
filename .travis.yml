@@ -3,10 +3,10 @@ language: node_js
 before_script:
   - yarn test
 deploy:
-  provider: lambda
-  function_name: "orestarScraper"
-  region: "us-west-2"
-  # role: "arn:aws:iam::0123456789012:role/lambda_basic_execution"
-  handler_name: "handler"
+  provider: script
+  script: sls deploy
+  region: $AWS_DEFAULT_REGION
+  access_key_id: $AWS_SECRET_ACCESS_KEY
+  secret_access_key: $AWS_ACCESS_KEY_ID
   on:
     branch: develop
