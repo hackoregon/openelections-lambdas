@@ -4,11 +4,6 @@ before_script:
   - yarn test
 deploy:
   provider: script
-  script: sls deploy
-  region: $AWS_DEFAULT_REGION
-  access_key_id: 
-    secure: $AWS_SECRET_ACCESS_KEY
-  secret_access_key: 
-    secure: $AWS_ACCESS_KEY_ID
+  script:  AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY AWS_REGION=$AWS_DEFAULT_REGION sls deploy
   on:
     branch: develop
