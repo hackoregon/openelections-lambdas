@@ -1,2 +1,12 @@
 language: node_js
 # node version is read from .nvmrc
+before_script:
+  - yarn test
+deploy:
+  provider: lambda
+  function_name: "orestarScraper"
+  region: "us-west-2"
+  # role: "arn:aws:iam::0123456789012:role/lambda_basic_execution"
+  handler_name: "handler"
+  on:
+    branch: develop
