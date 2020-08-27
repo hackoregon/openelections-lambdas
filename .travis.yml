@@ -6,8 +6,7 @@ cache:
 
 install:
     - npm install -g serverless
-    - npm i serverless-offline -g
-    - yarn install
+    - npm i
 
 before_script:
   - yarn test
