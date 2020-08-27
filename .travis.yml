@@ -1,14 +1,19 @@
 language: node_js
 # node version is read from .nvmrc
-before_script:
-  - yarn test
 cache:
   directories:
     - node_modules
-install: npm install -g serverless
+
+install:
+    - npm install -g serverless
+    - yarn install
+
+before_script:
+  - yarn test
+
 deploy:
   provider: script
-  role: ${AWS_ROLE}
+  role: "${AWS_ROLE}"
   script: AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY AWS_REGION=$AWS_DEFAULT_REGION sls deploy --stage production
   on:
     branch: develop
