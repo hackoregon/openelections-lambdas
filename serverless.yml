@@ -5,8 +5,6 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
-  serverless-iam-roles-per-function:
-    defaultInherit: true
   prune:
     automatic: true
     number: 3
@@ -14,7 +12,6 @@ custom:
 plugins:
   - serverless-offline
   - serverless-webpack
-  - serverless-iam-roles-per-function
   - serverless-prune-plugin
   - serverless-dotenv-plugin
   - serverless-offline-scheduler
@@ -30,12 +27,6 @@ provider:
 
   tracing:
     lambda: true
-  # iamRoleStatements:
-  #   - Effect: Allow
-  #     Action:
-  #       - xray:PutTraceSegments
-  #       - xray:PutTelemetryRecords
-  #     Resource: "*"
 
 functions:
   orestarScraper:
