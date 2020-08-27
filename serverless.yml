@@ -4,7 +4,9 @@ service:
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: true
+    includeModules: false
+    packager: 'yarn'
+    excludeFiles: ./tests/*
   prune:
     automatic: true
     number: 3
