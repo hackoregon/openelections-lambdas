@@ -8,13 +8,12 @@ install:
     - npm install -g serverless
 
 before_script:
-  - npm i
-  - npm run test
+  - yarn test
 
 deploy:
   provider: script
   role:
     - $AWS_ROLE
-  script: AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY AWS_REGION=$AWS_DEFAULT_REGION sls deploy function -f orestarScraper --stage production --verbose
+  script: yarn install && AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY AWS_REGION=$AWS_DEFAULT_REGION sls deploy function -f orestarScraper --stage production --verbose
   on:
     branch: develop
