@@ -25,7 +25,13 @@ provider:
   stage: ${opt:stage, 'local'}
   region: ${opt:region, 'us-west-2'}
   environment:
-    DEBUG: '*'
+    GOOGLE_GIS_KEY: ${env:GOOGLE_GIS_KEY}
+    DB_USERNAME: ${env:DB_USERNAME}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_NAME: ${env:DB_NAME}
+    DB_HOST: ${env:DB_HOST}
+    DB_PORT: ${env:DB_PORT}
+    BUG_SNAG_API_KEY: ${env:BUG_SNAG_API_KEY}
 
   tracing:
     lambda: true
