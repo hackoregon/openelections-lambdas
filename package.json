@@ -14,11 +14,6 @@
   },
   "dependencies": {
     "@bugsnag/js": "^7.2.1",
-    "@dazn/lambda-powertools-cloudwatchevents-client": "^1.21.0",
-    "@dazn/lambda-powertools-correlation-ids": "^1.8.2",
-    "@dazn/lambda-powertools-lambda-client": "^1.21.0",
-    "@dazn/lambda-powertools-logger": "^1.21.0",
-    "@dazn/lambda-powertools-pattern-basic": "^1.21.0",
     "aws-lambda": "^1.0.5",
     "aws-sdk": "^2.627.0",
     "class-validator": "^0.12.2",
@@ -26,7 +21,6 @@
     "pg": "^8.3.0",
     "puppeteer": "^5.2.1",
     "reflect-metadata": "^0.1.13",
-    "source-map-support": "^0.5.10",
     "typeorm": "^0.2.25",
     "xlsx": "^0.16.4"
   },

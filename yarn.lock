@@ -918,68 +918,6 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/safe-json-stringify/-/safe-json-stringify-6.0.0.tgz#22abdcd83e008c369902976730c34c150148a758"
   integrity sha512-htzFO1Zc57S8kgdRK9mLcPVTW1BY2ijfH7Dk2CeZmspTWKdKqSo1iwmqrq2WtRjFlo8aRZYgLX0wFrDXF/9DLA==
 
-"@dazn/lambda-powertools-cloudwatchevents-client@^1.21.0":
-  version "1.24.1"
-  resolved "https://registry.yarnpkg.com/@dazn/lambda-powertools-cloudwatchevents-client/-/lambda-powertools-cloudwatchevents-client-1.24.1.tgz#7437f0d82cb28cff3e2dbb9827732e24089cf6b5"
-  integrity sha512-eMNZbX1XCjBgPG4SON+9N9frZ/V1joHLBkKNrTuHtKrQDI+vVqkoe+EQ97yQ8mNpl/wTMFgpMjRXbJTZenK9Pg==
-  dependencies:
-    "@dazn/lambda-powertools-correlation-ids" "^1.24.1"
-    "@dazn/lambda-powertools-logger" "^1.24.1"
-    aws-sdk "^2.540.0"
-
-"@dazn/lambda-powertools-correlation-ids@^1.24.1", "@dazn/lambda-powertools-correlation-ids@^1.8.2":
-  version "1.24.1"
-  resolved "https://registry.yarnpkg.com/@dazn/lambda-powertools-correlation-ids/-/lambda-powertools-correlation-ids-1.24.1.tgz#889ab3149addf0c158cbbd3215433fbb612c352c"
-  integrity sha512-03kwqDKpeuPDtOzRl+cGN+1g4AJ5sXubMla+ph4p3FqZRkcCOTWRrNoX+O+NMTRWZOojyhAi+comaoHMaEVY0A==
-
-"@dazn/lambda-powertools-lambda-client@^1.21.0":
-  version "1.24.1"
-  resolved "https://registry.yarnpkg.com/@dazn/lambda-powertools-lambda-client/-/lambda-powertools-lambda-client-1.24.1.tgz#ddfb5d547489a73330598001ad4c4f34cc87d1ec"
-  integrity sha512-x4WEI/cAdjwixvcphUvvMqEPo9/ECUkoaNin9Bh2rD+GiyVXBfU5bsakicOEQb8/qs86o878oI2Tx/r7k/zFIw==
-  dependencies:
-    "@dazn/lambda-powertools-correlation-ids" "^1.24.1"
-    "@dazn/lambda-powertools-logger" "^1.24.1"
-
-"@dazn/lambda-powertools-logger@^1.21.0", "@dazn/lambda-powertools-logger@^1.24.1":
-  version "1.24.1"
-  resolved "https://registry.yarnpkg.com/@dazn/lambda-powertools-logger/-/lambda-powertools-logger-1.24.1.tgz#2b6b47d6dce9fbcaaa17b111bb1e14a5f821a6f2"
-  integrity sha512-nAYPnF0XWZ/WUY1TA06EFaX35djpCPWpRWIbmQZFBo/AKn8ekR2EpqYKduUTBnbC5IKPiTKFQgfk1togF+RFEg==
-  dependencies:
-    "@dazn/lambda-powertools-correlation-ids" "^1.24.1"
-
-"@dazn/lambda-powertools-middleware-correlation-ids@^1.25.0":
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/@dazn/lambda-powertools-middleware-correlation-ids/-/lambda-powertools-middleware-correlation-ids-1.25.0.tgz#2fb4c712221397a23e74e2fd6ca36f0e310c22e5"
-  integrity sha512-q4ap37Q7gsK4G5reyngPx4k0ttsWJzBHwKAm3IBm8KpAL3CL/jtd0gRGeMPV/3xn96w9Bc6gSH516l50QLoMnQ==
-  dependencies:
-    "@dazn/lambda-powertools-correlation-ids" "^1.24.1"
-    "@dazn/lambda-powertools-logger" "^1.24.1"
-
-"@dazn/lambda-powertools-middleware-log-timeout@^1.24.1":
-  version "1.24.1"
-  resolved "https://registry.yarnpkg.com/@dazn/lambda-powertools-middleware-log-timeout/-/lambda-powertools-middleware-log-timeout-1.24.1.tgz#6b4640e2e81b548260cc026e65169255bb85115b"
-  integrity sha512-015W29kYj3bdLWn3EZqcWzJ0Rvn1J3e+CIB6fdIEiaXujfb62zURUrdemufCZzZ8VXo5TZ/o//Qqwsjpk9QP3w==
-  dependencies:
-    "@dazn/lambda-powertools-logger" "^1.24.1"
-
-"@dazn/lambda-powertools-middleware-sample-logging@^1.24.1":
-  version "1.24.1"
-  resolved "https://registry.yarnpkg.com/@dazn/lambda-powertools-middleware-sample-logging/-/lambda-powertools-middleware-sample-logging-1.24.1.tgz#8cf064e1697b3b3f7c3acc17e5481b800fe47ba8"
-  integrity sha512-oTjNCTudG9xwBnl/0TixSFbNZ5G95BOocp7FG3mY+NGpKS7ik0w1fexMbev3dRXecApU8UiEzB/devZkCoUnWQ==
-  dependencies:
-    "@dazn/lambda-powertools-correlation-ids" "^1.24.1"
-    "@dazn/lambda-powertools-logger" "^1.24.1"
-
-"@dazn/lambda-powertools-pattern-basic@^1.21.0":
-  version "1.25.0"
-  resolved "https://registry.yarnpkg.com/@dazn/lambda-powertools-pattern-basic/-/lambda-powertools-pattern-basic-1.25.0.tgz#c25a97ade9bc529cf77dcd6ba41726402b19f4cf"
-  integrity sha512-tQo8k3ufSoJHTlmajyTzwPPw9CDFj0/hnX0VbgSYFJWJwCvaTFDEy/LHPBqM1/DWlUa5k9LxhRUfvot7RXMgiA==
-  dependencies:
-    "@dazn/lambda-powertools-middleware-correlation-ids" "^1.25.0"
-    "@dazn/lambda-powertools-middleware-log-timeout" "^1.24.1"
-    "@dazn/lambda-powertools-middleware-sample-logging" "^1.24.1"
-    "@middy/core" "^1.0.0"
-
 "@hapi/accept@^3.2.4":
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/@hapi/accept/-/accept-3.2.4.tgz#687510529493fe1d7d47954c31aff360d9364bd1"
@@ -1278,13 +1216,6 @@
     "@hapi/boom" "7.x.x"
     "@hapi/bourne" "1.x.x"
     "@hapi/hoek" "8.x.x"
-
-"@middy/core@^1.0.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@middy/core/-/core-1.1.0.tgz#5a80c5831402fee429971a49a8697fb5b0789655"
-  integrity sha512-K9k2SGSDl7nhwU2gibvSNC5vZpQUDjpfAC42z+6UTNp65pqpqJ1pbhwiartmk0aGOFPdL+kHxIwho+BOP5+8dA==
-  dependencies:
-    once "^1.4.0"
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
@@ -1925,7 +1856,7 @@ aws-lambda@^1.0.5:
     js-yaml "^3.13.1"
     watchpack "^2.0.0-beta.10"
 
-aws-sdk@*, aws-sdk@^2.540.0, aws-sdk@^2.627.0:
+aws-sdk@*, aws-sdk@^2.627.0:
   version "2.730.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.730.0.tgz#5b2775bb0c3cd7764031a17a9bcac3f1aafc385e"
   integrity sha512-hYHplsbgUDP0XuaVJaHx2L/nC0E1i+4dGlkAQpkJz3qQ4NDfLnrbUFsA2g3AyWAsrnjrBNCkexPvwnV82Qng1g==
@@ -6558,7 +6489,7 @@ source-map-resolve@^0.5.0:
     source-map-url "^0.4.0"
     urix "^0.1.0"
 
-source-map-support@^0.5.0, source-map-support@^0.5.10, source-map-support@^0.5.17, source-map-support@~0.5.12:
+source-map-support@^0.5.0, source-map-support@^0.5.17, source-map-support@~0.5.12:
   version "0.5.19"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.19.tgz#a98b62f86dcaf4f67399648c085291ab9e8fed61"
   integrity sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
