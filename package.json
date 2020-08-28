@@ -25,6 +25,7 @@
     "node-fetch": "^2.6.0",
     "pg": "^8.3.0",
     "puppeteer": "^5.2.1",
+    "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.10",
     "typeorm": "^0.2.25",
     "xlsx": "^0.16.4"
