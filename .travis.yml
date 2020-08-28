@@ -1,8 +1,5 @@
 language: node_js
 # node version is read from .nvmrc
-cache:
-  directories:
-    - node_modules
 
 install:
     - npm install -g serverless
