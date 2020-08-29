@@ -47,6 +47,10 @@ functions:
           name: orestarScraper
           description: 'Pull Ted Wheeler campaign contribution data every 12 hours'
           rate: rate(12 hours)
-      # - http: 
-      #     method: get
-      #     path: orestarScraper
+  updateDB:
+    handler: src/handler.updateDB
+    events:
+      - http: 
+          method: post
+          path: updateDB
+          cors: true

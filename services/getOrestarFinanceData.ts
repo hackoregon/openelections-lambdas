@@ -1,11 +1,13 @@
 import chromium from 'chrome-aws-lambda';
+import XLSX from 'xlsx';
 import { existsSync as fileExists, unlink } from 'fs';
+import { OrestarEntry } from './types';
 
 interface OrestarFinanceQueryCriteria {
   candidateName: string;
 }
 
-export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<string> => {
+export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<OrestarEntry[]> => {
   const browser = await chromium.puppeteer.launch({
     // headless: true,
     // timeout: 0,
@@ -96,5 +98,12 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<s
 
   browser.close();
 
-  return xlsFilename;
+  const workbook = XLSX.readFile(xlsFilename, {
+    bookVBA: true,
+    WTF: true,
+    type: 'file',
+  });
+  const sheetName = workbook.SheetNames[0];
+  const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+  return orestarData;
 };
