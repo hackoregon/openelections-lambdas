@@ -12,11 +12,11 @@ custom:
     number: 3
 
 plugins:
-  # - serverless-offline
+  - serverless-offline
   - serverless-webpack
   - serverless-prune-plugin
-  # - serverless-dotenv-plugin
-  # - serverless-offline-scheduler
+  - serverless-dotenv-plugin
+  - serverless-offline-scheduler
 
 provider:
   name: aws
@@ -43,7 +43,7 @@ functions:
       - schedule:
           name: orestarScraper
           description: 'Pull Ted Wheeler campaign contribution data every 12 hours'
-          rate: rate(12 hours)
+          rate: rate(1 minute)
       # - http: 
       #     method: get
       #     path: orestarScraper
