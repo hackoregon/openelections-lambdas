@@ -12,11 +12,11 @@ custom:
     number: 3
 
 plugins:
-  - serverless-offline
+  # - serverless-offline
   - serverless-webpack
   - serverless-prune-plugin
-  - serverless-dotenv-plugin
-  - serverless-offline-scheduler
+  # - serverless-dotenv-plugin
+  # - serverless-offline-scheduler
 
 provider:
   name: aws
