@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import chromium from 'chrome-aws-lambda';
 import { existsSync as fileExists, unlink } from 'fs';
 
 interface OrestarFinanceQueryCriteria {
@@ -6,9 +6,14 @@ interface OrestarFinanceQueryCriteria {
 }
 
 export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<string> => {
-  const browser = await puppeteer.launch({
-    headless: true,
-    timeout: 0,
+  const browser = await chromium.puppeteer.launch({
+    // headless: true,
+    // timeout: 0,
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
   });
 
   const page = await browser.newPage();
@@ -67,6 +72,7 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<s
   unlink(xlsFilename, (err) => {
     if (err) {
       // file did not exist
+      console.log('no file?')
     }
     console.log(`${xlsFilename} was deleted.`);
   });
