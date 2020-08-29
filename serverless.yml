@@ -1,6 +1,9 @@
 service:
   name: oae-lambdas
 
+package:
+  individually: true
+
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
