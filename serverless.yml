@@ -35,7 +35,6 @@ provider:
     DB_HOST: ${env:DB_HOST}
     DB_PORT: ${env:DB_PORT}
     BUG_SNAG_API_KEY: ${env:BUG_SNAG_API_KEY}
-
   tracing:
     lambda: true
 

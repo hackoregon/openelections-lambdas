@@ -1,4 +1,4 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import type { APIGatewayProxyHandler } from 'aws-lambda';
 import { parseAndSaveContributionData } from '@services/parseAndSaveContributionData';
 import getOrestarFinanceData from '@services/getOrestarFinanceData';
 
