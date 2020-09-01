@@ -41,6 +41,7 @@ provider:
 functions:
   orestarScraper:
     handler: src/handler.orestarScraper
+    timeout: 600 # 10 min
     events:
       - schedule:
           name: orestarScraper
