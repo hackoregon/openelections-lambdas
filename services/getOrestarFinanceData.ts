@@ -11,7 +11,7 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<s
     timeout: 0,
     // args: chromium.args,
     // defaultViewport: chromium.defaultViewport,
-    // executablePath: await chromium.executablePath,
+    executablePath: await chromium.executablePath,
     // headless: chromium.headless,
     // ignoreHTTPSErrors: true,
   });
