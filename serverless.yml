@@ -7,9 +7,11 @@ package:
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: true
     packager: 'yarn'
     excludeFiles: ./tests/*
+    includeModules:
+      forceInclude:
+        - pg
   prune:
     automatic: true
     number: 3
