@@ -7,13 +7,13 @@ interface OrestarFinanceQueryCriteria {
 
 export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<string> => {
   const browser = await chromium.puppeteer.launch({
-    // headless: true,
-    // timeout: 0,
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: chromium.headless,
-    ignoreHTTPSErrors: true,
+    headless: true,
+    timeout: 0,
+    // args: chromium.args,
+    // defaultViewport: chromium.defaultViewport,
+    // executablePath: await chromium.executablePath,
+    // headless: chromium.headless,
+    // ignoreHTTPSErrors: true,
   });
 
   const page = await browser.newPage();
