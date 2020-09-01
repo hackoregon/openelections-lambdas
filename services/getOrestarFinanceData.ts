@@ -1,5 +1,6 @@
 import chromium from 'chrome-aws-lambda';
 import { existsSync as fileExists, unlink } from 'fs';
+import path from 'path';
 
 interface OrestarFinanceQueryCriteria {
   candidateName: string;
@@ -7,13 +8,13 @@ interface OrestarFinanceQueryCriteria {
 
 export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<string> => {
   const browser = await chromium.puppeteer.launch({
-    headless: true,
-    timeout: 0,
-    // args: chromium.args,
-    // defaultViewport: chromium.defaultViewport,
+    // headless: true,
+    // timeout: 0,
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath,
-    // headless: chromium.headless,
-    // ignoreHTTPSErrors: true,
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
   });
 
   const page = await browser.newPage();
@@ -26,9 +27,12 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<s
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0',
   });
 
+  var downloadDir = '/tmp';
+
+  console.log(downloadDir)
   await (page as any)._client.send('Page.setDownloadBehavior', {
     behavior: 'allow',
-    downloadPath: './temp',
+    downloadPath: downloadDir,
   });
 
   page.on('console', (stuffToLog) => console.log(stuffToLog.text()));
@@ -67,7 +71,7 @@ export default async ({ candidateName }: OrestarFinanceQueryCriteria): Promise<s
 
   console.log('found export link');
 
-  const xlsFilename = './temp/XcelCNESearch.xls';
+  const xlsFilename = path.join(downloadDir, 'XcelCNESearch.xls');
 
   unlink(xlsFilename, (err) => {
     if (err) {
