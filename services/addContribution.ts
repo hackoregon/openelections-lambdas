@@ -18,7 +18,8 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
                      || oaeContribution.city !== entry.city
                      || oaeContribution.state !== entry.state
                      || oaeContribution.zip !== entry.zip
-                     || (geoCode == null);
+                     || (geoCode == null)
+                     || !(oaeContribution.address1.toLowerCase().includes('po box'))
       let failedGeocoding = false;
       if (doGeocode) {
         try {
@@ -47,7 +48,8 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
       if (failedGeocoding || orestarDataHasBeenUpdated) {
         await contributionRepo.save(oaeContribution);
       }
-    }).catch(async () => {
+    }).catch(async (error) => {
+      console.log(error);
       // find failed, this is an insert! row does not exist so we geocode.
       if (!oaeContribution.addressPoint) {
         try {
@@ -71,5 +73,7 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
       }
       await contributionRepo.save(oaeContribution);
     });
+  } else {
+    console.log('not valid: ', oaeContribution);
   }
 };

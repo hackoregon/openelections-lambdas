@@ -110,7 +110,7 @@ export async function parseAndSaveContributionData(xlsFilename: string): Promise
   const orestarData: OrestarEntry[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
   console.log(`total contributions: ${orestarData.length}.`);
 
-  Promise.all(orestarData.map(async (orestarEntry: OrestarEntry) => {
+  await Promise.all(orestarData.map(async (orestarEntry: OrestarEntry) => {
     const oaeEntry: IContributionSummary = {
       orestarOriginalId: orestarEntry['Original Id'],
       orestarTransactionId: orestarEntry['Tran Id'],
@@ -152,5 +152,5 @@ export async function parseAndSaveContributionData(xlsFilename: string): Promise
     } catch (error) {
       reportError(error);
     }
-  }));
+  })).then(() => console.log('Done!!!'));
 }
