@@ -14,13 +14,18 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
       // when orestar updates a record, they keep the original id but update the transaction id.
       const orestarDataHasBeenUpdated = oaeContribution.orestarTransactionId !== entry.orestarTransactionId;
 
-      const doGeocode = oaeContribution.address1 !== entry.address1
+      let doGeocode = oaeContribution.address1 !== entry.address1
                      || oaeContribution.city !== entry.city
                      || oaeContribution.state !== entry.state
                      || oaeContribution.zip !== entry.zip
-                     || (geoCode == null)
-                     || !(oaeContribution.address1.toLowerCase().includes('po box'))
+                     || (geoCode == null);
+
+      if ((oaeContribution.address1.toLowerCase().includes('po box'))) {
+        doGeocode = false
+      }
+
       let failedGeocoding = false;
+
       if (doGeocode) {
         try {
           const coordinates = await geocodeAddressAsync({
