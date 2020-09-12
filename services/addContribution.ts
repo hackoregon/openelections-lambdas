@@ -50,7 +50,17 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
           reportError(error);
         }
       }
-      if (failedGeocoding || orestarDataHasBeenUpdated) {
+
+      // lazy migration of bad timezone data
+      // converts all incorrectly stored dates to pacific time
+      let changedTz = false;
+      if (entry.date.getUTCHours() === 0) {
+        // PDT is 7 hours
+        oaeContribution.date.setUTCHours(7);
+        changedTz = true;
+      }
+
+      if (failedGeocoding || orestarDataHasBeenUpdated || changedTz) {
         await contributionRepo.save(oaeContribution);
       }
     }).catch(async (error) => {
