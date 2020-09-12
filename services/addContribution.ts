@@ -1,5 +1,5 @@
-import { ExternalContribution, IContributionSummary } from '../models/entity/ExternalContribution';
 import { Repository } from 'typeorm';
+import { ExternalContribution, IContributionSummary } from '../models/entity/ExternalContribution';
 import { geocodeAddressAsync } from './geocodeContributions';
 import { reportError } from './bugSnag';
 
@@ -21,7 +21,7 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
                      || (geoCode == null);
 
       if ((oaeContribution.address1.toLowerCase().includes('po box'))) {
-        doGeocode = false
+        doGeocode = false;
       }
 
       let failedGeocoding = false;
@@ -34,7 +34,7 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
             state: entry.state,
             zip: entry.zip,
           });
-          
+
           if (coordinates) {
             geoCode = {
               type: 'Point',
@@ -72,8 +72,8 @@ export default async (contribution: IContributionSummary, contributionRepo: Repo
               },
             });
           }
-        } catch (error) {
-          reportError(error);
+        } catch (err) {
+          reportError(err);
         }
       }
       await contributionRepo.save(oaeContribution);

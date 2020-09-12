@@ -117,7 +117,8 @@ export async function parseAndSaveContributionData(xlsFilename: string): Promise
       type: ContributionType.CONTRIBUTION,
       subType: getContributionSubType(orestarEntry['Sub Type']),
       contributorType: orestarEntry['Book Type'] ? getContributorType(orestarEntry['Book Type']) : undefined,
-      date: new Date(orestarEntry['Tran Date']),
+      // ensure pacific timezone regardless of server time
+      date: new Date(new Date(orestarEntry['Tran Date']).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', timeZoneName: 'short' })),
       amount: orestarEntry.Amount,
       name: orestarEntry['Contributor/Payee'],
       occupation: orestarEntry['Occptn Txt'],
@@ -143,12 +144,12 @@ export async function parseAndSaveContributionData(xlsFilename: string): Promise
       oaeEntry.country = 'United States';
       oaeEntry.addressPoint = {
         type: 'Point',
-        coordinates: [-123.0287679, 44.9392561]
+        coordinates: [-123.0287679, 44.9392561],
       };
     }
 
     try {
-      await addContribution(oaeEntry, contributionRepo);      
+      await addContribution(oaeEntry, contributionRepo);
     } catch (error) {
       reportError(error);
     }
